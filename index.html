@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAK English Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --paper:#F3F6F8; --surface:#FFFFFF; --surface-alt:#E9EEF2; --line:#D3DCE3;
+    --ink:#14273B; --ink-soft:#4C6072; --ink-faint:#7C8DA0;
+    --blue:#1F5C8B; --blue-deep:#123A57; --blue-tint:#E4EEF5;
+    --orange:#D9782D; --orange-tint:#FBEADA;
+    --success:#2E8B57; --success-tint:#E4F3EA;
+    --danger:#C1443A; --danger-tint:#FBE7E4;
+    --warning:#B8801E; --warning-tint:#FBEFDA;
+    --tab-1:#1F5C8B; --tab-2:#D9782D; --tab-3:#3E8E7E; --tab-4:#7A5FA0;
+    --chrome:#123A57; --chrome-ink:#DCEAF2;
+    --shadow:0 1px 2px rgba(20,39,59,.06), 0 6px 20px -8px rgba(20,39,59,.18);
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0E1B26; --surface:#152531; --surface-alt:#1B2E3E; --line:#2B3F51;
+      --ink:#E7EEF3; --ink-soft:#AFC0CD; --ink-faint:#7C93A3;
+      --blue:#5CA4D6; --blue-deep:#8FC3E8; --blue-tint:#1B3A4C;
+      --orange:#E8934E; --orange-tint:#3A2B1B;
+      --success:#57B98A; --success-tint:#173226;
+      --danger:#E2776B; --danger-tint:#3A1E1C;
+      --warning:#E0B15C; --warning-tint:#3A2E15;
+      --tab-1:#5CA4D6; --tab-2:#E8934E; --tab-3:#5FB39F; --tab-4:#A18BD1;
+      --chrome:#0B1826; --chrome-ink:#CFE0EC;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px -10px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0E1B26; --surface:#152531; --surface-alt:#1B2E3E; --line:#2B3F51;
+    --ink:#E7EEF3; --ink-soft:#AFC0CD; --ink-faint:#7C93A3;
+    --blue:#5CA4D6; --blue-deep:#8FC3E8; --blue-tint:#1B3A4C;
+    --orange:#E8934E; --orange-tint:#3A2B1B;
+    --success:#57B98A; --success-tint:#173226;
+    --danger:#E2776B; --danger-tint:#3A1E1C;
+    --warning:#E0B15C; --warning-tint:#3A2E15;
+    --tab-1:#5CA4D6; --tab-2:#E8934E; --tab-3:#5FB39F; --tab-4:#A18BD1;
+    --chrome:#0B1826; --chrome-ink:#CFE0EC;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px -10px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.disp{font-family:"Archivo", ui-sans-serif, sans-serif; text-wrap:balance;}
+  .mono{font-family:"IBM Plex Mono", ui-monospace, monospace;}
+  a{color:var(--blue);}
+  button{font-family:inherit;}
+  ::selection{background:var(--orange-tint);}
+
+  #app{min-height:100vh; display:flex; flex-direction:column;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    display:flex; align-items:center; gap:14px;
+    padding:12px clamp(16px,3vw,28px);
+    background:var(--chrome); color:#fff;
+    position:sticky; top:0; z-index:40;
+    box-shadow:var(--shadow);
+  }
+  .brandmark{
+    width:38px; height:38px; border-radius:9px; background:var(--orange);
+    display:flex; align-items:center; justify-content:center; flex:none;
+    font-family:"IBM Plex Mono"; font-weight:600; font-size:13px; color:#241305;
+  }
+  .brandtext{display:flex; flex-direction:column; line-height:1.15;}
+  .brandtext b{font-family:"Archivo"; font-size:16px; font-weight:800; letter-spacing:.2px;}
+  .brandtext span{font-size:11.5px; color:var(--chrome-ink); letter-spacing:.4px; text-transform:uppercase;}
+  .topbar-spacer{flex:1;}
+  .topbar .who{
+    display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--chrome-ink);
+    background:rgba(255,255,255,.08); padding:6px 12px; border-radius:999px;
+  }
+  .iconbtn{
+    background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); color:#fff;
+    width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:16px; flex:none;
+  }
+  .iconbtn:hover{background:rgba(255,255,255,.2);}
+  .iconbtn:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{outline:3px solid var(--orange); outline-offset:2px;}
+
+  /* ---------- Shell ---------- */
+  .shell{flex:1; display:flex; align-items:flex-start; max-width:1180px; margin:0 auto; width:100%; gap:0;}
+  .sidebar{
+    width:220px; flex:none; padding:20px 12px 40px; position:sticky; top:66px;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .sidebar .grouplabel{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); padding:10px 12px 6px;}
+  .tab{
+    display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:10px;
+    cursor:pointer; border:1px solid transparent; background:none; width:100%; text-align:left;
+    color:var(--ink-soft); font-size:14.5px; font-weight:600; position:relative;
+  }
+  .tab .stripe{width:5px; height:22px; border-radius:3px; flex:none; background:var(--accent, var(--blue));}
+  .tab small{display:block; font-weight:500; font-size:11.5px; color:var(--ink-faint); margin-top:1px;}
+  .tab:hover{background:var(--surface-alt);}
+  .tab.active{background:var(--surface); border-color:var(--line); color:var(--ink); box-shadow:var(--shadow);}
+  .tab.active .stripe{background:var(--accent, var(--blue));}
+
+  main.content{flex:1; min-width:0; padding:22px clamp(14px,3vw,28px) 60px;}
+
+  /* ---------- Welcome ---------- */
+  .welcome-wrap{max-width:640px; margin:6vh auto; padding:0 16px;}
+  .welcome-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:clamp(24px,5vw,40px);
+    box-shadow:var(--shadow);
+  }
+  .welcome-card h1{font-size:clamp(24px,4vw,32px); margin:2px 0 6px; color:var(--blue-deep);}
+  .welcome-card p.lead{color:var(--ink-soft); margin:0 0 22px; font-size:15px; line-height:1.55;}
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:12.5px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin-bottom:6px;}
+  input[type=text], input[type=password], textarea{
+    width:100%; font-size:15px; padding:11px 13px; border-radius:10px; border:1.5px solid var(--line);
+    background:var(--paper); color:var(--ink); font-family:inherit;
+  }
+  textarea{resize:vertical; min-height:110px; line-height:1.5;}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:11px 20px; border-radius:10px; border:none; cursor:pointer;
+    font-weight:700; font-size:14.5px; font-family:inherit; transition:transform .08s ease;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--orange); color:#2A1608;}
+  .btn-primary:hover{background:#c96c22;}
+  :root[data-theme="dark"] .btn-primary:hover, @media (prefers-color-scheme:dark){ }
+  .btn-blue{background:var(--blue); color:#fff;}
+  .btn-blue:hover{background:var(--blue-deep);}
+  .btn-ghost{background:var(--surface-alt); color:var(--ink);}
+  .btn-ghost:hover{background:var(--line);}
+  .btn-sm{padding:7px 13px; font-size:13px;}
+  .btn[disabled]{opacity:.5; cursor:not-allowed;}
+  .link-btn{background:none; border:none; color:var(--blue); cursor:pointer; font-size:13.5px; font-weight:600; padding:0;}
+
+  /* ---------- Module top / cards ---------- */
+  .modheader{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 16px; margin-bottom:4px;}
+  .modheader h2{font-size:clamp(20px,3vw,26px); margin:0; color:var(--blue-deep);}
+  .pagebadge{font-family:"IBM Plex Mono"; font-size:12px; font-weight:600; color:var(--blue); background:var(--blue-tint); padding:3px 9px; border-radius:999px;}
+  .subline{color:var(--ink-soft); font-size:14px; margin:2px 0 22px;}
+  .moduletabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:22px; border-bottom:1px solid var(--line); padding-bottom:0;}
+  .mtab{
+    background:none; border:none; padding:9px 14px; font-size:13.5px; font-weight:700; color:var(--ink-faint);
+    cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-1px; font-family:inherit;
+  }
+  .mtab.active{color:var(--blue-deep); border-bottom-color:var(--accent, var(--orange));}
+  .mtab:hover{color:var(--ink);}
+
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow);}
+  .stack{display:flex; flex-direction:column; gap:14px;}
+  .grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px;}
+
+  /* Task cards */
+  .task{display:flex; gap:14px; align-items:flex-start; padding:14px 16px; border:1px solid var(--line); border-radius:12px; background:var(--surface);}
+  .task input[type=checkbox]{width:19px; height:19px; margin-top:3px; accent-color:var(--success); flex:none;}
+  .task .taskmeta{font-family:"IBM Plex Mono"; font-size:11.5px; font-weight:600; color:var(--blue); background:var(--blue-tint); padding:2px 8px; border-radius:6px; white-space:nowrap;}
+  .task .tasktext{font-size:14.5px; line-height:1.5;}
+  .task .taskhint{font-size:13px; color:var(--ink-soft); margin-top:4px; padding-left:2px;}
+  .task .taskhint b{color:var(--orange); font-weight:700;}
+  .task.done{opacity:.55;}
+  .task.done .tasktext{text-decoration:line-through;}
+
+  /* Flashcard */
+  .flashwrap{display:flex; flex-direction:column; align-items:center; gap:16px;}
+  .flashcard{
+    width:min(420px,100%); height:190px; border-radius:16px; cursor:pointer; position:relative;
+    background:linear-gradient(160deg,var(--surface),var(--surface-alt)); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; text-align:center; padding:20px;
+    box-shadow:var(--shadow); font-size:22px; font-weight:700; color:var(--blue-deep);
+  }
+  .flashcard .side-label{position:absolute; top:12px; left:16px; font-family:"IBM Plex Mono"; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-faint);}
+  .flashcard.flip{color:var(--orange);}
+  .flashnav{display:flex; align-items:center; gap:12px;}
+  .flashnav .count{font-family:"IBM Plex Mono"; font-size:13px; color:var(--ink-soft);}
+
+  /* Quiz / grammar items */
+  .qitem{border:1px solid var(--line); border-radius:12px; padding:14px 16px; background:var(--surface);}
+  .qitem .qtext{font-size:14.5px; margin-bottom:10px; line-height:1.5;}
+  .options{display:flex; flex-direction:column; gap:7px;}
+  .opt{display:flex; align-items:center; gap:9px; padding:9px 12px; border:1.5px solid var(--line); border-radius:9px; cursor:pointer; font-size:14px;}
+  .opt:hover{background:var(--surface-alt);}
+  .opt.selected{border-color:var(--blue); background:var(--blue-tint);}
+  .opt.correct{border-color:var(--success); background:var(--success-tint);}
+  .opt.incorrect{border-color:var(--danger); background:var(--danger-tint);}
+  .opt input{accent-color:var(--blue);}
+  .qitem.graded-correct{border-left:4px solid var(--success);}
+  .qitem.graded-incorrect{border-left:4px solid var(--danger);}
+  .qanswerline{font-size:13px; margin-top:8px; padding-top:8px; border-top:1px dashed var(--line); color:var(--ink-soft);}
+  .qanswerline b{color:var(--success);}
+
+  .resultbar{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    padding:14px 18px; border-radius:12px; background:var(--blue-tint); border:1px solid var(--line);
+  }
+  .resultbar .score{font-family:"IBM Plex Mono"; font-size:22px; font-weight:600; color:var(--blue-deep);}
+  .badge{display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px;}
+  .badge-success{background:var(--success-tint); color:var(--success);}
+  .badge-warning{background:var(--warning-tint); color:var(--warning);}
+  .badge-info{background:var(--blue-tint); color:var(--blue);}
+
+  /* Pronunciation */
+  .prow{display:flex; align-items:center; gap:14px; padding:12px 16px; border:1px solid var(--line); border-radius:12px; background:var(--surface); flex-wrap:wrap;}
+  .prow .ptarget{flex:1; min-width:160px; font-size:15px; font-weight:600;}
+  .mic{
+    height:36px; padding:0 14px; border-radius:999px; border:none; background:var(--blue); color:#fff; font-size:13px; font-weight:700;
+    cursor:pointer; flex:none; display:flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap;
+  }
+  .mic:hover{filter:brightness(1.08);}
+
+  /* Writing */
+  .wordcount{font-family:"IBM Plex Mono"; font-size:12.5px; color:var(--ink-faint); margin-top:6px;}
+  .feedbackbox{
+    margin-top:14px; padding:16px 18px; border-radius:12px; background:var(--orange-tint); border:1px solid var(--line);
+    font-size:14px; line-height:1.6; white-space:pre-wrap;
+  }
+  .feedbackbox .ftitle{font-family:"IBM Plex Mono"; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--orange); margin-bottom:8px; display:block; font-weight:600;}
+
+  /* Games */
+  .gamecard{border:1px solid var(--line); border-radius:14px; padding:18px; background:var(--surface); display:flex; flex-direction:column; gap:10px;}
+  .gamecard h3{margin:0; font-size:16.5px;}
+  .gamecard .gdesc{font-size:13.5px; color:var(--ink-soft); line-height:1.5;}
+  .gamestat{font-family:"IBM Plex Mono"; font-size:12.5px; color:var(--ink-faint);}
+  .matchgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px 18px;}
+  .matchtile{
+    padding:10px 12px; border:1.5px solid var(--line); border-radius:9px; background:var(--surface-alt);
+    cursor:pointer; font-size:13.5px; text-align:center; min-height:44px; display:flex; align-items:center; justify-content:center;
+  }
+  .matchtile.sel{border-color:var(--blue); background:var(--blue-tint);}
+  .matchtile.ok{border-color:var(--success); background:var(--success-tint); cursor:default; opacity:.75;}
+  .matchtile.bad{border-color:var(--danger); background:var(--danger-tint); animation:shake .3s;}
+  @keyframes shake{25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+  .clockrow{display:flex; align-items:center; gap:16px; font-family:"IBM Plex Mono"; font-size:14px;}
+  .clockrow .big{font-size:26px; font-weight:600;}
+
+  /* Teacher */
+  .modal-backdrop{position:fixed; inset:0; background:rgba(10,20,30,.55); display:flex; align-items:center; justify-content:center; z-index:100; padding:16px;}
+  .modal{background:var(--surface); border-radius:16px; padding:28px; width:min(380px,100%); box-shadow:var(--shadow); border:1px solid var(--line);}
+  .modal h2{margin:0 0 6px; font-size:19px; color:var(--blue-deep);}
+  .modal p{font-size:13.5px; color:var(--ink-soft); margin:0 0 16px;}
+  .pin-input{letter-spacing:.4em; text-align:center; font-family:"IBM Plex Mono"; font-size:20px;}
+  table.dash{width:100%; border-collapse:collapse; font-size:13.5px;}
+  table.dash th{text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); padding:8px 10px; border-bottom:2px solid var(--line);}
+  table.dash td{padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.dash tr:hover td{background:var(--surface-alt);}
+  .scorepill{font-family:"IBM Plex Mono"; font-size:12px; padding:2px 8px; border-radius:6px; background:var(--surface-alt); white-space:nowrap;}
+  .studentdetail{background:var(--surface-alt); border-radius:10px; padding:14px 16px; margin-top:6px; font-size:13px;}
+  .toolbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:16px;}
+
+  footer.hint{max-width:1180px; margin:0 auto; padding:10px clamp(16px,3vw,28px) 30px; font-size:12px; color:var(--ink-faint);}
+
+  @media (max-width:820px){
+    .shell{flex-direction:column;}
+    .sidebar{position:static; width:100%; flex-direction:row; overflow-x:auto; padding:12px 12px 6px; gap:8px;}
+    .sidebar .grouplabel{display:none;}
+    .tab{flex-direction:column; align-items:flex-start; min-width:132px; gap:4px;}
+    .tab .stripe{width:100%; height:4px;}
+  }
+  [hidden]{display:none !important;}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+<footer class="hint">HAK English Lab &middot; pilot build &middot; Units 1&ndash;3 + Grammar Review &middot; Business in Context 2. HAK</footer>
+
+<!-- Firebase (compat API — matches the app's existing db.doc()/db.collection() calls) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   CONTENT DATA — Units 1–3 + Grammar Review
+   ============================================================ */
+function mcq(q, options, a){ return {type:"mcq", q, options, a}; }
+function tf(q, accepted){ return {type:"text", q, accepted}; }
+/* Pronunciation item: spoken via the browser's built-in text-to-speech (no microphone needed),
+   plus a written "banana buh-NAN-uh"-style respelling of the key word. rp is only set when
+   Received Pronunciation actually differs from General American (mainly non-rhotic r-dropping). */
+function pr(text, focus, ga, rp){ return {text, focus, ga, rp: rp||null}; }
+
+const UNITS = {
+
+unit1: {
+  id:"unit1", order:1, label:"Unit 1", title:"This is where we belong", pages:"p. 12–21", accent:"var(--tab-1)",
+  tasks: [
+    {page:"12", ex:"1", instr:"Word power: definitions. Match the words (1–7) from the text “Multicultural Europe” to the definitions (A–E). Two words do not have a definition — write your own.", hint:"Skim the text first, then find each word in context before choosing a definition."},
+    {page:"13", ex:"2", instr:"Synonyms & antonyms. Complete the exercise using the text on p. 12.", hint:"Decide first whether you need a word with the same or the opposite meaning."},
+    {page:"13", ex:"3", instr:"Gap-fill dialogue. Complete the dialogue using the words from exercise 2.", hint:"Finish exercise 2 first — this exercise reuses those exact words."},
+    {page:"13", ex:"4", instr:"Collocations. Match the collocations that belong together.", hint:"Say each pair out loud — a correct collocation should sound natural to you."},
+    {page:"17", ex:"7", instr:"Discussing youth statistics. Study one infographic on your own, then discuss your findings in a small group and prepare to report back to the class.", hint:"Use the trend phrases from the Vocabulary tab (“a significant rise”, “just under a third” …) in your notes."},
+    {page:"18", ex:"1", instr:"Preparing to listen. Discuss with a partner: what problems — and what positive things — might happen when sharing a flat with other young adults?", hint:"Think about six aspects: entertainment, family, food, language, privacy, socialising."},
+    {page:"18", ex:"2", instr:"Listening: note-taking (Track 2). Listen to the interview with Nagesh, Ryan, Hassan and Ji-hoon and complete their profiles (country, religion, food preferences).", hint:"On your first listen, focus only on country and religion — food comes on the second listen."},
+    {page:"19", ex:"3", instr:"Listening: multiple choice (Track 2). Choose the correct answer (A, B, C or D) for questions 1–6.", hint:"Read all four options before you listen again — two options often sound similar."},
+    {page:"20", ex:"4", instr:"Listening for detail (Track 2). Answer the three questions in your own words, then compare your answers with a partner.", hint:""},
+    {page:"20", ex:"5", instr:"Grammar in use: reported questions. Rewrite the six direct questions as reported questions.", hint:"No question word order, no do/does/did, backshift the tense — see the Grammar tab for the rule."},
+    {page:"20", ex:"6", instr:"Discussion: multicultural flatshare. Discuss what would be best about it, what might be a problem, and how you would solve it. Report your ideas to the class.", hint:""},
+    {page:"21", ex:"—", instr:"“Can do” self-assessment. Fill in the table: what can you already do after Unit 1?", hint:""},
+  ],
+  vocab: [
+    {en:"multicultural", de:"multikulturell"},
+    {en:"to belong somewhere", de:"irgendwo dazugehören"},
+    {en:"flatmate", de:"Mitbewohner:in"},
+    {en:"to share a flat", de:"sich eine Wohnung teilen"},
+    {en:"youth unemployment", de:"Jugendarbeitslosigkeit"},
+    {en:"a significant rise", de:"ein deutlicher Anstieg"},
+    {en:"a sharp decline", de:"ein starker Rückgang"},
+    {en:"just under a third", de:"knapp ein Drittel"},
+    {en:"nearly one in five", de:"fast jede:r Fünfte"},
+    {en:"the majority of", de:"die Mehrheit von"},
+    {en:"vegetarian", de:"Vegetarier:in"},
+    {en:"religion", de:"Religion"},
+    {en:"to accept differences", de:"Unterschiede akzeptieren"},
+    {en:"cultural background", de:"kultureller Hintergrund"},
+    {en:"privacy", de:"Privatsphäre"},
+    {en:"attitude", de:"Einstellung"},
+  ],
+  grammarFocus: "Reported questions",
+  grammar: [
+    mcq("“Do you like curry?” → She asked me ___ I liked curry.", ["if","that","why","do"], 0),
+    mcq("“Where do you live?” → He asked me where I ___.", ["live","lived","do live","had lived"], 1),
+    mcq("“Have you finished?” → The teacher asked if we ___ finished.", ["have","had","has","having"], 1),
+    mcq("“What time does the shop close?” → Ryan asked what time the shop ___.", ["closes","closed","close","is closing"], 1),
+    mcq("“Are you eating properly?” → His mother asked if he ___ eating properly.", ["is","was","be","been"], 1),
+    tf("“Why did you choose this flat?” → The reporter asked Nagesh why he ___ that flat. (one word or phrase)", ["had chosen","chose"]),
+    mcq("“Can I use your pan?” → Ji-hoon asked Nagesh if he could use ___ pan.", ["your","his","my","their"], 1),
+    mcq("Which pattern is correct for reporting a yes/no question?", ["asked if/whether + statement word order","asked + question word order","asked that + infinitive","asked do + base form"], 0),
+  ],
+  pronunciation: [
+    pr("multicultural","multicultural","muhl-tee-KUHL-chuh-ruhl"),
+    pr("a significant rise","significant","sig-NIF-ih-kuhnt"),
+    pr("flatmate","flatmate","FLAT-mayt"),
+    pr("I would like to share a flat.","share","SHAIR","SHEH"),
+    pr("nearly one in five","nearly","NEER-lee","NEE-uh-lee"),
+    pr("vegetarian","vegetarian","vej-uh-TAIR-ee-uhn"),
+    pr("What does it mean to belong somewhere new?","belong","buh-LONG"),
+    pr("the majority of young people","majority","muh-JOR-ih-tee"),
+  ],
+  writing: {prompt:"Would you like to share a flat with people from different cultures one day? Why or why not? Mention one advantage and one possible challenge.", minWords:40, maxWords:70},
+  quiz: [
+    mcq("What does “a sharp decline” mean?", ["a steep decrease","a slow increase","staying the same","a small rise"], 0),
+    mcq("“Just under a third” means about:", ["20%","30%","45%","60%"], 1),
+    mcq("Choose the correct reported question. Direct: “Where do you live?”", ["He asked me where I lived.","He asked me where do I live.","He asked me where I live.","He asked where lived I."], 0),
+    mcq("A “flatmate” is someone who…", ["owns your flat","shares a flat with you","cleans flats for a job","sells flats"], 1),
+    mcq("“The majority of” means:", ["less than half","about half","more than half","none"], 2),
+    mcq("“Do you like curry?” → She asked me ___ I liked curry.", ["if","that","because","when"], 0),
+    mcq("“Privacy” in German is:", ["Öffentlichkeit","Privatsphäre","Sicherheit","Freiheit"], 1),
+    mcq("Which word introduces a reported yes/no question?", ["that","if","when","because"], 1),
+  ],
+},
+
+unit2: {
+  id:"unit2", order:2, label:"Unit 2", title:"School life", pages:"p. 28–37", accent:"var(--tab-2)",
+  tasks: [
+    {page:"28", ex:"1a", instr:"Word power: mind map. Copy the mind map and complete it using highlighted words from the text “The best days of our lives?”.", hint:"The four branches match the text’s four subheadings: time management, expectations, conflict, bullying."},
+    {page:"29", ex:"1b", instr:"Use the completed mind map to talk about your own school life with a partner.", hint:""},
+    {page:"29", ex:"2a", instr:"Word families. Complete the verb → noun table.", hint:"Use a dictionary if you need to."},
+    {page:"29", ex:"3", instr:"Collocations. Find verbs in the text that go with: expectations, problem, assignment, relief, situation.", hint:"All five verbs appear word-for-word in the text on p. 28."},
+    {page:"29", ex:"2b", instr:"Writing. Write advice for improving school life, using your answers from exercise 1a.", hint:""},
+    {page:"30", ex:"1", instr:"Preparing to read. Look at the title and introduction: what type of text is this? Justify your guess with a partner.", hint:""},
+    {page:"30–31", ex:"2", instr:"Reading: multiple matching. Choose the correct missing part (A–I) for each gap (1–6). Two extra parts are not used.", hint:"Read the whole text once first without worrying about the gaps, then check each gap in its sentence context."},
+    {page:"31", ex:"3", instr:"Reading for detail. Answer the five detail questions about the UNESCO report.", hint:""},
+    {page:"31", ex:"4a", instr:"Language in use: signposting phrases. Categorise the phrases by function (contrast, consequence, explanation, example).", hint:""},
+    {page:"32", ex:"4b", instr:"Use the signposting phrases from 4a to complete the education-fairness text.", hint:"Each phrase is used exactly once."},
+    {page:"32", ex:"5a–5b", instr:"Working with words: antonyms. Find opposite-meaning words in the text, then use them to complete the Sierra Leone text.", hint:""},
+    {page:"33", ex:"6", instr:"Think – pair – share. Imagine you had forgotten how to read. Write a short campaign paragraph beginning “If you can’t read, you can’t …”.", hint:""},
+    {page:"33", ex:"7", instr:"Writing: informal letter. Reply to your penfriend Chrissie (about 200 words): language-learning methods, types of German, and why speaking German well matters for her visit.", hint:""},
+    {page:"34", ex:"1a–1b", instr:"Preparing to listen. Discuss your sleep habits, then match activism vocabulary to definitions.", hint:""},
+    {page:"35", ex:"2–3", instr:"Listening (Track 5). Answer the note-form questions, then tick the sleep benefits that are mentioned.", hint:"Read all nine questions first and underline key words before you listen."},
+    {page:"35", ex:"4", instr:"Speaking: individual long turn. Compare two protest methods, evaluate them, and give your own idea for creating change.", hint:""},
+    {page:"36", ex:"5", instr:"Reading for gist. Match each heading to the best place in the advice text.", hint:"Read only the first sentence of each paragraph — the main idea is usually there."},
+    {page:"36", ex:"6", instr:"Listening for gist (Track 6). Match each teenager’s story to the best piece of advice.", hint:""},
+    {page:"37", ex:"—", instr:"Grammar in use: if-clauses I. Complete the six sentences with the correct verb forms.", hint:"if + Present Simple, … will + base verb."},
+    {page:"37", ex:"7", instr:"Group task: achieving change. Brainstorm a school issue, describe “how things are” vs. “how things should be”, plan up to five steps, and report back.", hint:""},
+  ],
+  vocab: [
+    {en:"to manage your time", de:"seine Zeit einteilen"},
+    {en:"expectation", de:"Erwartung"},
+    {en:"conflict", de:"Konflikt"},
+    {en:"bullying", de:"Mobbing"},
+    {en:"assignment", de:"Arbeitsauftrag"},
+    {en:"relief", de:"Erleichterung"},
+    {en:"to drop out of school", de:"die Schule abbrechen"},
+    {en:"literacy", de:"Lese- und Schreibfähigkeit"},
+    {en:"poverty", de:"Armut"},
+    {en:"disability", de:"Behinderung"},
+    {en:"petition", de:"Petition"},
+    {en:"to spread the word", de:"etwas bekannt machen"},
+    {en:"movement (social)", de:"(soziale) Bewegung"},
+    {en:"alert (adj.)", de:"wach, aufmerksam"},
+  ],
+  grammarFocus: "If-clauses I & signposting phrases",
+  grammar: [
+    mcq("If they ___ (concentrate) on one problem, they will have a better chance of success.", ["concentrate","concentrated","will concentrate","concentrating"], 0),
+    mcq("If we ___ (get) angry, people won’t take our arguments seriously.", ["get","got","will get","getting"], 0),
+    mcq("People may accuse you of bullying if you ___ (criticize) an individual.", ["criticize","criticized","will criticize","criticizing"], 0),
+    mcq("If we break the school rules, we ___ (get) into trouble.", ["get","will get","got","would get"], 1),
+    mcq("Which phrase signals a contrast?", ["As a result","However","For example","That means"], 1),
+    mcq("Which phrase signals a consequence?", ["On the other hand","However","As a result","For example"], 2),
+    tf("Give an antonym of “advanced” used in the UNESCO text.", ["backward","underdeveloped"]),
+    tf("Give an antonym of “fortunate”.", ["unfortunate"]),
+  ],
+  pronunciation: [
+    pr("time management","management","MAN-ij-muhnt"),
+    pr("unrealistic expectations","expectations","ek-spek-TAY-shuhnz"),
+    pr("a significant conflict","conflict","KON-flikt"),
+    pr("literacy","literacy","LIT-uh-ruh-see"),
+    pr("to drop out of school","drop out","DROP owt"),
+    pr("If we break the rules, we will get into trouble.","trouble","TRUH-buhl"),
+    pr("petition","petition","puh-TISH-uhn"),
+    pr("a good night’s sleep","sleep","SLEEP"),
+  ],
+  writing: {prompt:"Write advice for improving school life. Choose ONE challenge — time management, expectations, conflict, or bullying — and give at least three pieces of practical advice.", minWords:60, maxWords:90},
+  quiz: [
+    mcq("“Bullying” means:", ["helping a classmate","repeatedly hurting or scaring someone","doing homework together","winning a competition"], 1),
+    mcq("If we always give up at the first problem, ___.", ["nothing will change","nothing changes","nothing changed","nothing would change"], 0),
+    mcq("“Literacy” is the ability to:", ["run fast","read and write","speak two languages","use a computer"], 1),
+    mcq("Which phrase introduces an example?", ["However","As a result","For example","That means"], 2),
+    mcq("“Relief” means:", ["a feeling of stress","a feeling of comfort after stress ends","an assignment","a conflict"], 1),
+    mcq("If they concentrate on one problem, they ___ a better chance of success.", ["will have","have","had","would have"], 0),
+    mcq("“To drop out of school” means to:", ["graduate early","study abroad","leave school before finishing","repeat a year"], 2),
+    mcq("A “petition” is:", ["a formal request signed by many people","a type of exam","a school rule","a class trip"], 0),
+  ],
+},
+
+unit3: {
+  id:"unit3", order:3, label:"Unit 3", title:"First career steps", pages:"p. 38–49", accent:"var(--tab-3)",
+  tasks: [
+    {page:"38", ex:"—", instr:"Read “Four steps to planning your career”: self-assessment, exploration, decision-making, gaining experience.", hint:"Mark the four bold subheadings first to see the text’s structure."},
+    {page:"39", ex:"1a", instr:"Word power: collocations. Find verbs in the text that go with: decision, experience, goal, information, option, skill.", hint:""},
+    {page:"39", ex:"1b", instr:"Compounds with “career”. Find career-compounds in the text to complete Joel’s blog post.", hint:"All the compounds appear word-for-word on p. 38."},
+    {page:"39", ex:"2", instr:"Word families. Complete the verb → noun and noun → adjective tables.", hint:"Use a dictionary if you need to."},
+    {page:"39", ex:"3", instr:"Career advice. Give a partner advice using vocabulary from exercises 1 and 2.", hint:""},
+    {page:"40", ex:"1", instr:"Preparing to read. Discuss: what do you know about internships? Why do job seekers and companies want them?", hint:""},
+    {page:"40–41", ex:"2", instr:"Reading: true/false with justification. Decide T/F for statements 1–7 and quote the first four words of the supporting sentence.", hint:"For a false statement, the sentence you quote usually states the opposite fact."},
+    {page:"42", ex:"3", instr:"Reading for detail: internship popularity, what young people hope to gain, why unpaid internships are unfair, and a contrast with a “fair and transparent” system.", hint:""},
+    {page:"42", ex:"4a–4b", instr:"Collocations. Find verb+noun expressions with career / internship / workforce, then complete the brochure text.", hint:""},
+    {page:"42–43", ex:"5a–5b", instr:"Grammar: the passive. Underline passive examples in the text, then complete the dialogue with the correct passive forms.", hint:"First decide: who or what performs the action — is it unknown, unimportant, or obvious? See the Grammar tab."},
+    {page:"43", ex:"6", instr:"Writing: formal email. Write a ~200-word email inviting Daniel O’Brien to speak at your school: introduce yourself, explain your connection, say what you’d like him to talk about, describe the audience.", hint:""},
+    {page:"44", ex:"1a–1c", instr:"Preparing to listen. Match jobs to photos, then discuss blue-/white-/pink-collar categories and the term “glass ceiling”.", hint:""},
+    {page:"44–45", ex:"2", instr:"Listening: multiple matching (Track 7). Match sentence beginnings (1–8) to endings (A–K); two endings are not used.", hint:"Skim all beginnings AND all endings before you listen."},
+    {page:"45", ex:"3a–3b", instr:"Word families. Complete the table, then use your answers to complete the text.", hint:""},
+    {page:"46", ex:"Extra", instr:"Make two lists: jobs with an obvious gender bias, and jobs that are equally balanced.", hint:""},
+    {page:"46", ex:"4a–4b", instr:"Discussion & statement. Discuss which speakers you agree/disagree with, then write a group statement on gender equality in professions.", hint:""},
+    {page:"46", ex:"5", instr:"Speaking: interaction. Role-play a careers-fair conversation about a profession’s gender balance.", hint:""},
+    {page:"47", ex:"1", instr:"Reading for detail. Highlight the employer’s key activities, required skills, and conditions of employment in the Expedit internship advertisement.", hint:"Use three different colours for the three categories."},
+    {page:"48–49", ex:"2", instr:"Writing: application form. Complete the application form with your own (or invented) details.", hint:""},
+    {page:"49", ex:"Extra", instr:"Covering letter. Write a ~200-word covering letter: introduce yourself, state the position, explain why you want it and why you’re suitable, close politely.", hint:""},
+  ],
+  vocab: [
+    {en:"self-assessment", de:"Selbsteinschätzung"},
+    {en:"to gain experience", de:"Erfahrung sammeln"},
+    {en:"internship", de:"Praktikum"},
+    {en:"unpaid", de:"unbezahlt"},
+    {en:"to advertise a job", de:"eine Stelle ausschreiben"},
+    {en:"workforce", de:"Belegschaft"},
+    {en:"blue-collar job", de:"Arbeiterberuf"},
+    {en:"white-collar job", de:"Büroberuf"},
+    {en:"glass ceiling", de:"gläserne Decke"},
+    {en:"discrimination", de:"Diskriminierung"},
+    {en:"applicant", de:"Bewerber:in"},
+    {en:"covering letter", de:"Bewerbungsschreiben"},
+    {en:"to be suitable for", de:"geeignet sein für"},
+    {en:"qualification", de:"Qualifikation"},
+  ],
+  grammarFocus: "The passive",
+  grammar: [
+    mcq("Internships ___ (advertise) online.", ["advertise","are advertised","advertised","is advertising"], 1),
+    mcq("The position ___ (already / fill).", ["has already filled","has already been filled","was already filling","is already filling"], 1),
+    mcq("The candidates ___ (interview) next week.", ["will interview","will be interviewed","are interviewing","interviewed"], 1),
+    mcq("Mobile phones ___ (not / allow) in class.", ["don’t allow","aren’t allowed","isn’t allowed","not allowed"], 1),
+    mcq("This position ___ (advertise) publicly if the process were fair.", ["would be advertised","would advertise","will advertise","is advertised"], 0),
+    tf("Passive of: “The manager pays interns a small allowance.” (write the new subject + verb)", ["interns are paid a small allowance","interns are paid a small allowance by the manager"]),
+    mcq("Which sentence is in the passive?", ["The company offers internships.","Internships are offered every summer.","We offer internships.","They will offer internships."], 1),
+    mcq("We use the passive mainly when:", ["the agent is unknown or unimportant","we want to sound informal","we are giving direct orders","we are asking a question"], 0),
+  ],
+  pronunciation: [
+    pr("internship","internship","IN-turn-ship","IN-tuhn-ship"),
+    pr("workforce","workforce","WURK-fors","WUHK-fohs"),
+    pr("the glass ceiling","glass ceiling","GLAS SEE-ling","GLAHSS SEE-ling"),
+    pr("Internships are advertised online.","advertised","AD-ver-tyzd","AD-vuh-tyzd"),
+    pr("applicant","applicant","AP-lih-kuhnt"),
+    pr("covering letter","covering letter","KUHV-uh-ring LET-er","KUHV-uh-ring LET-uh"),
+    pr("I am writing to apply for this position.","position","puh-ZISH-uhn"),
+    pr("qualification","qualification","kwol-ih-fih-KAY-shuhn"),
+  ],
+  writing: {prompt:"Write the opening of a covering letter: introduce yourself, say which internship or job you are applying for, and give ONE reason why you would be a suitable candidate.", minWords:60, maxWords:90},
+  quiz: [
+    mcq("“Glass ceiling” refers to:", ["a type of office window","an invisible barrier stopping women/minorities reaching top jobs","a rule about dress code","a company logo"], 1),
+    mcq("Passive of: “The manager will interview the candidates.”", ["The candidates will interview.","The candidates will be interviewed.","The candidates are interviewed.","The candidates interviewed."], 1),
+    mcq("“Unpaid” means:", ["paid extra","paid normally","not paid at all","paid once a year"], 2),
+    mcq("A “covering letter” is sent:", ["instead of a CV","together with a job application, to introduce yourself","only after getting the job","to resign from a job"], 1),
+    mcq("Passive of: “Someone has already filled the position.”", ["The position has already been filled.","The position was already filled by someone.","The position is already filled.","The position had already filled."], 0),
+    mcq("“Blue-collar” jobs typically involve:", ["office paperwork","physical or manual work","managing a company","teaching"], 1),
+    mcq("“Applicant” means:", ["Bewerber:in","Arbeitgeber:in","Kolleg:in","Chef:in"], 0),
+    mcq("The passive is formed with “to be” + the:", ["infinitive","past participle","present participle","gerund"], 1),
+  ],
+},
+
+grammarreview: {
+  id:"grammarreview", order:4, label:"Grammar Review", title:"1st-Klasse grammar refresher", pages:"AB GR.1–GR.4", accent:"var(--tab-4)",
+  tasks: [
+    {page:"AB GR.1", ex:"—", instr:"Future tenses: fill in the correct future form (will / going to / present progressive / present simple) in eight sentences about plans and predictions.", hint:"Ask: is this a spontaneous decision, a plan already arranged, a fixed timetable, or a prediction?"},
+    {page:"AB GR.1", ex:"—", instr:"Vocabulary quiz: 15 items reviewing key 1st-Klasse topics.", hint:""},
+    {page:"AB GR.1", ex:"—", instr:"“Find someone who…” mingle speaking task.", hint:""},
+    {page:"AB GR.2", ex:"—", instr:"Conditionals: identify the type (0 / I / II / III) of four sentences, then write your own conditional paragraph.", hint:"Type 0 = general truth, Type I = real future, Type II = unreal present, Type III = unreal past."},
+    {page:"AB GR.3", ex:"—", instr:"Relative clauses & passive voice: combine sentences using relative pronouns, then rewrite five sentences in the passive.", hint:""},
+    {page:"AB GR.4", ex:"—", instr:"Irregular verbs: complete the reference list (infinitive / past simple / past participle), then play the Irregular Verb Race.", hint:""},
+    {page:"Check", ex:"—", instr:"Irregular Verb Check: a short 15-item check filling in the missing verb forms.", hint:""},
+    {page:"Text", ex:"—", instr:"Read “Ben’s Road Trip” and answer the comprehension questions. Then find one example each of a future form, a conditional, a relative clause and the passive voice.", hint:""},
+  ],
+  vocab: [
+    {en:"go", de:"went – gone"}, {en:"see", de:"saw – seen"}, {en:"take", de:"took – taken"},
+    {en:"give", de:"gave – given"}, {en:"write", de:"wrote – written"}, {en:"come", de:"came – come"},
+    {en:"buy", de:"bought – bought"}, {en:"bring", de:"brought – brought"}, {en:"think", de:"thought – thought"},
+    {en:"make", de:"made – made"}, {en:"know", de:"knew – known"}, {en:"speak", de:"spoke – spoken"},
+    {en:"break", de:"broke – broken"}, {en:"choose", de:"chose – chosen"}, {en:"fall", de:"fell – fallen"},
+  ],
+  grammarFocus: "Future · conditionals · relative clauses · passive · irregular verbs",
+  grammar: [
+    mcq("Look! The bus ___ (leave)!", ["leaves","is leaving","will leave","is going to leave"], 1),
+    mcq("I think it ___ (rain) tomorrow.", ["rains","is raining","will rain","is going to"], 2),
+    mcq("If you heat ice, it ___ (melt).", ["melts","will melt","melted","would melt"], 0),
+    mcq("If I ___ (be) you, I would apologise.", ["am","was","were","would be"], 2),
+    mcq("If she had studied, she ___ (pass) the exam.", ["will pass","would pass","would have passed","passed"], 2),
+    mcq("The man ___ lives next door is a teacher.", ["which","who","whom","whose"], 1),
+    mcq("London, ___ is the capital of England, is huge.", ["that","which","who","where"], 1),
+    mcq("The letter ___ (write) yesterday.", ["wrote","was written","is written","has written"], 1),
+    tf("Past participle of “write”.", ["written"]),
+    tf("Past simple of “go”.", ["went"]),
+  ],
+  pronunciation: [
+    pr("I’m going to visit my cousin next week.","cousin","KUZ-uhn"),
+    pr("If I were you, I would apologise.","were","WUR","WUH"),
+    pr("The letter was written yesterday.","letter","LET-er","LET-uh"),
+    pr("the man who lives next door","door","DOR","DAW"),
+    pr("gone","gone","GON"),
+    pr("written","written","RIT-uhn"),
+    pr("I have never been to Canada.","never","NEV-er","NEV-uh"),
+    pr("If it rains, we will stay at home.","home","HOHM"),
+  ],
+  writing: {prompt:"Continue the story “Ben’s Road Trip” with your own paragraph. Use at least one passive sentence, one relative clause and one conditional sentence.", minWords:70, maxWords:100},
+  quiz: [
+    mcq("Which sentence is Conditional 0 (a general truth)?", ["If you heat ice, it melts.","If it rains, I will stay home.","If I were rich, I would travel.","If she had known, she would have come."], 0),
+    mcq("Past participle of “see”:", ["saw","seen","seeing","sees"], 1),
+    mcq("A plan already arranged: “I ___ meeting Sam at 5.”", ["will","am","would","was"], 1),
+    mcq("Which relative pronoun refers to people as the subject?", ["who","which","where","whose"], 0),
+    mcq("Passive of: “They built the house in 1990.”", ["The house was built in 1990.","The house is built in 1990.","The house has built in 1990.","The house built in 1990."], 0),
+    mcq("Conditional III is used for:", ["real future possibility","general truths","unreal past situations","polite requests"], 2),
+    tf("Past simple of “buy”.", ["bought"]),
+    mcq("Which future form expresses a spontaneous decision?", ["going to","will","present progressive","present simple"], 1),
+  ],
+},
+
+};
+const UNIT_ORDER = ["unit1","unit2","unit3","grammarreview"];
+
+/* ============================================================
+   FIREBASE CONFIG
+   ------------------------------------------------------------
+   Paste the config block from your Firebase project here
+   (Project settings → your web app → SDK setup and configuration).
+   These values are meant to be public in client-side code — the
+   real access control lives in your Firestore security rules,
+   not in hiding this object.
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyDzJ3eNsWOASNxmvj2tzymObQMcOkj20Tw",
+  authDomain: "hak-enws-2.firebaseapp.com",
+  projectId: "hak-enws-2",
+  storageBucket: "hak-enws-2.firebasestorage.app",
+  messagingSenderId: "262693976386",
+  appId: "1:262693976386:web:cb81c6c8978f8dd78cb0db",
+  measurementId: "G-VGMGBYLC4T",
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let claudeDb = null;
+let capabilitiesReady = Promise.resolve();
+let studentName = null;      // string or null
+let currentUnit = "unit1";
+let currentModule = "tasks";
+let isTeacher = false;
+let studentCache = {};       // name -> doc data (local mirror)
+let teacherWatchUnsub = null;
+
+try { studentName = localStorage.getItem("hakel_name") || null; } catch(e){}
+
+function downloadFile(filename, text){
+  try{
+    const blob = new Blob([text], {type:"text/csv;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    return true;
+  }catch(e){ return false; }
+}
+
+function slug(name){
+  return String(name).trim().toLowerCase()
+    .replace(/[äáàâ]/g,"a").replace(/[ëéèê]/g,"e").replace(/[ïíìî]/g,"i")
+    .replace(/[öóòô]/g,"o").replace(/[üúùû]/g,"u").replace(/ß/g,"ss").replace(/ñ/g,"n")
+    .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60) || "student";
+}
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function el(html){ const t=document.createElement("template"); t.innerHTML=html.trim(); return t.content.firstElementChild; }
+function qs(sel,root){ return (root||document).querySelector(sel); }
+function qsa(sel,root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function wordCount(s){ return (String(s).trim().match(/\S+/g)||[]).length; }
+
+/* ============================================================
+   DB HELPERS — always read-modify-write full doc (safe merge)
+   ============================================================ */
+function blankStudent(name){
+  const per = ()=>({ tasksDone:[], vocabScore:null, grammarScore:null, quizScore:null,
+                      pronunciation:{done:[]}, writing:null,
+                      games:{matchBestMs:null, clockBest:null} });
+  const doc = { name, createdAt: Date.now(), lastActive: Date.now() };
+  UNIT_ORDER.forEach(u=>{ doc[u]=per(); });
+  return doc;
+}
+async function loadStudent(name){
+  if(!claudeDb) return null;
+  const id = slug(name);
+  try{
+    const snap = await claudeDb.doc("students/"+id).get();
+    let data = snap && snap.exists ? snap.data() : null;
+    if(!data){ data = blankStudent(name); await claudeDb.doc("students/"+id).set(data); }
+    UNIT_ORDER.forEach(u=>{ if(!data[u]) data[u]=blankStudent(name)[u]; });
+    studentCache[id]=data;
+    return data;
+  }catch(e){ console.warn("loadStudent failed", e); return blankStudent(name); }
+}
+async function updateStudent(name, mutator){
+  if(!claudeDb) return;
+  const id = slug(name);
+  try{
+    const snap = await claudeDb.doc("students/"+id).get();
+    let data = snap && snap.exists ? snap.data() : blankStudent(name);
+    UNIT_ORDER.forEach(u=>{ if(!data[u]) data[u]=blankStudent(name)[u]; });
+    data.lastActive = Date.now();
+    mutator(data);
+    await claudeDb.doc("students/"+id).set(data);
+    studentCache[id]=data;
+  }catch(e){ console.warn("updateStudent failed", e); }
+}
+
+function hasAnyProgress(data){
+  if(!data) return false;
+  return UNIT_ORDER.some(u=>{
+    const d = data[u]; if(!d) return false;
+    return (d.tasksDone && d.tasksDone.length>0) || d.vocabScore || d.grammarScore || d.quizScore || d.writing ||
+      (d.pronunciation && d.pronunciation.done && d.pronunciation.done.length>0) ||
+      (d.games && (d.games.matchBestMs!=null || d.games.clockBest!=null));
+  });
+}
+
+/* Asks "is this really you?" when a login name already has saved progress —
+   the app has no passwords, so this is the only guard against two students
+   accidentally sharing one name and merging their progress. */
+function confirmNameModal(name){
+  return new Promise(resolve=>{
+    const backdrop = el(`<div class="modal-backdrop"></div>`);
+    document.body.appendChild(backdrop);
+    backdrop.appendChild(el(`<div class="modal">
+      <h2>Is this you?</h2>
+      <p>There’s already saved progress under the name “${esc(name)}”. If that’s your own work from before, continue. If it might be a classmate, please use a more specific name instead — e.g. add your last initial, like “${esc(name)} K”.</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="btn btn-primary" id="confirmYes">Yes, that’s me — continue</button>
+        <button class="btn btn-ghost" id="confirmNo">Use a different name</button>
+      </div>
+    </div>`));
+    qs("#confirmYes",backdrop).addEventListener("click", ()=>{ backdrop.remove(); resolve(true); });
+    qs("#confirmNo",backdrop).addEventListener("click", ()=>{ backdrop.remove(); resolve(false); });
+  });
+}
+
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+const app = qs("#app");
+
+function render(){
+  if(isTeacher){ renderTeacher(); return; }
+  if(!studentName){ renderWelcome(); return; }
+  renderStudentShell();
+}
+
+function renderWelcome(){
+  app.innerHTML = "";
+  app.appendChild(topbar(false));
+  const wrap = el(`<div class="welcome-wrap">
+    <div class="welcome-card">
+      <div class="pagebadge mono">PILOT · UNITS 1–3 + GRAMMAR REVIEW</div>
+      <h1>Welcome to the HAK English Lab</h1>
+      <p class="lead">Practise vocabulary, grammar, pronunciation and writing for <em>Business in Context 2. HAK</em> — and play a couple of quick games while you’re at it. Type your first name to start; your teacher will see your progress under this name.</p>
+      <div class="field">
+        <label for="nameInput">Your first name</label>
+        <input id="nameInput" type="text" maxlength="40" placeholder="e.g. Lena" autocomplete="off">
+        <div style="font-size:12.5px;color:var(--ink-faint);margin-top:6px">Use the same name every time to keep your progress. If someone else in your class has the same first name, add your last initial (e.g. “Lena K”) so your work doesn’t get mixed up with theirs.</div>
+      </div>
+      <button class="btn btn-primary" id="startBtn" style="width:100%">Start learning →</button>
+      <div id="startStatus" style="font-size:12.5px;color:var(--ink-soft);margin-top:10px;text-align:center"></div>
+    </div>
+  </div>`);
+  app.appendChild(wrap);
+  const input = qs("#nameInput", wrap);
+  const startBtn = qs("#startBtn", wrap);
+  const statusEl = qs("#startStatus", wrap);
+  input.addEventListener("keydown", e=>{ if(e.key==="Enter") start(); });
+  startBtn.addEventListener("click", start);
+  async function start(){
+    const v = input.value.trim();
+    if(!v){ input.focus(); input.style.borderColor="var(--danger)"; return; }
+    startBtn.disabled = true; statusEl.textContent = "Checking…";
+    try{ await capabilitiesReady; }catch(e){}
+    if(claudeDb){
+      try{
+        const snap = await claudeDb.doc("students/"+slug(v)).get();
+        const existing = snap && snap.exists ? snap.data() : null;
+        if(existing && hasAnyProgress(existing)){
+          statusEl.textContent = "";
+          const ok = await confirmNameModal(v);
+          if(!ok){ startBtn.disabled=false; input.focus(); input.select(); return; }
+        }
+      }catch(e){}
+    }
+    studentName = v;
+    try{ localStorage.setItem("hakel_name", v); }catch(e){}
+    render();
+  }
+  setTimeout(()=>input.focus(), 30);
+}
+
+function topbar(showWho){
+  const bar = el(`<div class="topbar">
+    <div class="brandmark">EN</div>
+    <div class="brandtext"><b>HAK English Lab</b><span>Business in Context · 2. Klasse</span></div>
+    <div class="topbar-spacer"></div>
+  </div>`);
+  if(showWho && studentName){
+    bar.insertBefore(el(`<div class="who">👤 ${esc(studentName)}
+      <button class="link-btn" style="color:var(--chrome-ink)" id="switchUser">switch</button></div>`), qs(".iconbtn", bar));
+  }
+  const lock = el(`<button class="iconbtn" title="Teacher login" id="teacherBtn">🔒</button>`);
+  bar.appendChild(lock);
+  setTimeout(()=>{
+    const sw = qs("#switchUser", bar);
+    if(sw) sw.addEventListener("click", ()=>{ studentName=null; try{localStorage.removeItem("hakel_name");}catch(e){} render(); });
+    qs("#teacherBtn", bar).addEventListener("click", openTeacherLogin);
+  },0);
+  return bar;
+}
+
+function renderStudentShell(){
+  app.innerHTML = "";
+  app.appendChild(topbar(true));
+  const shell = el(`<div class="shell"></div>`);
+  const sidebar = el(`<nav class="sidebar" aria-label="Units"></nav>`);
+  sidebar.appendChild(el(`<div class="grouplabel">Course blocks</div>`));
+  UNIT_ORDER.forEach(id=>{
+    const u = UNITS[id];
+    const tab = el(`<button class="tab ${id===currentUnit?"active":""}" style="--accent:${u.accent}">
+        <span class="stripe"></span>
+        <span>${esc(u.label)}<small>${esc(u.title)}</small></span>
+      </button>`);
+    tab.addEventListener("click", ()=>{ currentUnit=id; currentModule="tasks"; renderStudentShell(); });
+    sidebar.appendChild(tab);
+  });
+  shell.appendChild(sidebar);
+  const main = el(`<main class="content"></main>`);
+  shell.appendChild(main);
+  app.appendChild(shell);
+  renderModule(main);
+}
+
+const MODULES = [
+  {id:"tasks", label:"Tasks"},
+  {id:"vocab", label:"Vocabulary"},
+  {id:"grammar", label:"Grammar"},
+  {id:"pronunciation", label:"Pronunciation"},
+  {id:"writing", label:"Writing"},
+  {id:"games", label:"Games"},
+  {id:"quiz", label:"Unit Check"},
+];
+
+function renderModule(main){
+  const unit = UNITS[currentUnit];
+  main.innerHTML = "";
+  main.appendChild(el(`<div class="modheader">
+      <h2>${esc(unit.label)} — ${esc(unit.title)}</h2>
+      <span class="pagebadge">${esc(unit.pages)}</span>
+    </div>`));
+  main.appendChild(el(`<p class="subline">Grammar focus: ${esc(unit.grammarFocus)}</p>`));
+  const mtabs = el(`<div class="moduletabs" style="--accent:${unit.accent}"></div>`);
+  MODULES.forEach(m=>{
+    const b = el(`<button class="mtab ${m.id===currentModule?"active":""}" style="--accent:${unit.accent}">${esc(m.label)}</button>`);
+    b.addEventListener("click", ()=>{ currentModule=m.id; renderModule(main); });
+    mtabs.appendChild(b);
+  });
+  main.appendChild(mtabs);
+  const body = el(`<div class="modbody"></div>`);
+  main.appendChild(body);
+
+  ({
+    tasks: renderTasksModule,
+    vocab: renderVocabModule,
+    grammar: renderGrammarModule,
+    pronunciation: renderPronModule,
+    writing: renderWritingModule,
+    games: renderGamesModule,
+    quiz: renderQuizModule,
+  })[currentModule](body, unit);
+}
+
+/* ---------------- Tasks ---------------- */
+function renderTasksModule(body, unit){
+  body.appendChild(el(`<p class="subline" style="margin-top:-10px">Work through these tasks directly in your textbook. Tick each one off as you finish it — your teacher can see your progress.</p>`));
+  const list = el(`<div class="stack"></div>`);
+  body.appendChild(list);
+  const doneIds = (studentName && studentCache[slug(studentName)] && studentCache[slug(studentName)][unit.id].tasksDone) || [];
+  unit.tasks.forEach((t,i)=>{
+    const id = i;
+    const done = doneIds.includes(id);
+    const row = el(`<label class="task ${done?"done":""}">
+        <input type="checkbox" ${done?"checked":""}>
+        <div>
+          <span class="taskmeta">p. ${esc(t.page)}${t.ex&&t.ex!=="—"?" · Ex. "+esc(t.ex):""}</span>
+          <div class="tasktext">${esc(t.instr)}</div>
+          ${t.hint?`<div class="taskhint"><b>Tip:</b> ${esc(t.hint)}</div>`:""}
+        </div>
+      </label>`);
+    qs("input", row).addEventListener("change", async (e)=>{
+      row.classList.toggle("done", e.target.checked);
+      if(!studentName) return;
+      await updateStudent(studentName, data=>{
+        const arr = data[unit.id].tasksDone || [];
+        data[unit.id].tasksDone = e.target.checked ? Array.from(new Set([...arr,id])) : arr.filter(x=>x!==id);
+      });
+    });
+    list.appendChild(row);
+  });
+}
+
+/* ---------------- Vocabulary ---------------- */
+function renderVocabModule(body, unit){
+  let i = 0, flipped = false;
+  const wrap = el(`<div class="stack">
+    <div class="flashwrap">
+      <div class="flashcard" id="fcard"><span class="side-label">EN</span></div>
+      <div class="flashnav">
+        <button class="btn btn-ghost btn-sm" id="prevC">← Prev</button>
+        <span class="count mono" id="fcount"></span>
+        <button class="btn btn-ghost btn-sm" id="nextC">Next →</button>
+      </div>
+      <p style="font-size:13px;color:var(--ink-soft);margin:0">Tap the card to reveal the translation.</p>
+    </div>
+    <hr style="border:none;border-top:1px solid var(--line);margin:6px 0">
+    <div>
+      <h3 style="margin:0 0 4px;font-size:16px">Quick self-check</h3>
+      <p class="subline" style="margin:2px 0 14px">Five random questions from this unit’s vocabulary.</p>
+      <div id="vocabQuizArea"></div>
+    </div>
+  </div>`);
+  body.appendChild(wrap);
+  const card = qs("#fcard", wrap), count = qs("#fcount", wrap);
+  function paint(){
+    flipped=false;
+    const v = unit.vocab[i];
+    card.className="flashcard";
+    card.innerHTML = `<span class="side-label">EN</span>${esc(v.en)}`;
+    count.textContent = (i+1)+" / "+unit.vocab.length;
+  }
+  card.addEventListener("click", ()=>{
+    flipped=!flipped;
+    const v = unit.vocab[i];
+    card.className = "flashcard"+(flipped?" flip":"");
+    card.innerHTML = flipped ? `<span class="side-label">DE</span>${esc(v.de)}` : `<span class="side-label">EN</span>${esc(v.en)}`;
+  });
+  qs("#prevC", wrap).addEventListener("click", ()=>{ i=(i-1+unit.vocab.length)%unit.vocab.length; paint(); });
+  qs("#nextC", wrap).addEventListener("click", ()=>{ i=(i+1)%unit.vocab.length; paint(); });
+  paint();
+
+  // Self-check quiz generated from vocab
+  const qArea = qs("#vocabQuizArea", wrap);
+  const picks = shuffle(unit.vocab).slice(0, Math.min(5, unit.vocab.length));
+  const qitems = picks.map(v=>{
+    const distractors = shuffle(unit.vocab.filter(x=>x!==v)).slice(0,3).map(x=>x.de);
+    const options = shuffle([v.de, ...distractors]);
+    return {type:"mcq", q:`What does “${v.en}” mean?`, options, a: options.indexOf(v.de)};
+  });
+  renderGradableList(qArea, qitems, async (correct,total)=>{
+    if(studentName) await updateStudent(studentName, data=>{ data[unit.id].vocabScore = {correct, total, at: Date.now()}; });
+  }, "Check my answers", "vocab");
+}
+
+/* ---------------- Generic gradable list (grammar / quiz / vocab self-check) ---------------- */
+function renderGradableList(container, items, onGraded, buttonLabel, keyPrefix){
+  container.innerHTML="";
+  const list = el(`<div class="stack"></div>`);
+  const answers = new Array(items.length).fill(null);
+  items.forEach((it, idx)=>{
+    const card = el(`<div class="qitem" data-idx="${idx}"><div class="qtext">${idx+1}. ${esc(it.q)}</div></div>`);
+    if(it.type==="mcq"){
+      const opts = el(`<div class="options"></div>`);
+      it.options.forEach((opt,oi)=>{
+        const row = el(`<label class="opt"><input type="radio" name="${keyPrefix}-${idx}"><span>${esc(opt)}</span></label>`);
+        qs("input",row).addEventListener("change", ()=>{
+          answers[idx]=oi;
+          qsa(".opt",opts).forEach(o=>o.classList.remove("selected"));
+          row.classList.add("selected");
+        });
+        opts.appendChild(row);
+      });
+      card.appendChild(opts);
+    } else {
+      const inp = el(`<input type="text" placeholder="Type your answer…" style="max-width:340px">`);
+      inp.addEventListener("input", ()=>{ answers[idx]=inp.value; });
+      card.appendChild(inp);
+    }
+    card.appendChild(el(`<div class="qanswerline" hidden></div>`));
+    list.appendChild(card);
+  });
+  container.appendChild(list);
+  const bar = el(`<div style="margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"></div>`);
+  const goBtn = el(`<button class="btn btn-blue">${esc(buttonLabel)}</button>`);
+  bar.appendChild(goBtn);
+  const resultSlot = el(`<div style="flex:1"></div>`); bar.appendChild(resultSlot);
+  container.appendChild(bar);
+
+  goBtn.addEventListener("click", ()=>{
+    let correctCount=0;
+    items.forEach((it,idx)=>{
+      const card = qs(`.qitem[data-idx="${idx}"]`, list);
+      const ansLine = qs(".qanswerline", card);
+      let isCorrect=false, correctText="";
+      if(it.type==="mcq"){
+        correctText = it.options[it.a];
+        isCorrect = answers[idx]===it.a;
+        qsa(".opt", card).forEach((o,oi)=>{
+          o.classList.remove("correct","incorrect");
+          if(oi===it.a) o.classList.add("correct");
+          else if(oi===answers[idx]) o.classList.add("incorrect");
+        });
+      } else {
+        correctText = it.accepted[0];
+        const given = String(answers[idx]||"").trim().toLowerCase();
+        isCorrect = it.accepted.some(a=>a.toLowerCase()===given);
+      }
+      card.classList.remove("graded-correct","graded-incorrect");
+      card.classList.add(isCorrect?"graded-correct":"graded-incorrect");
+      ansLine.hidden=false;
+      ansLine.innerHTML = isCorrect ? `✅ Correct.` : `❌ Correct answer: <b>${esc(correctText)}</b>`;
+      if(isCorrect) correctCount++;
+    });
+    const pct = Math.round(100*correctCount/items.length);
+    const tone = pct>=80?"success":pct>=50?"warning":"info";
+    resultSlot.innerHTML = `<div class="resultbar"><span class="score mono">${correctCount} / ${items.length}</span>
+      <span class="badge badge-${tone}">${pct}%</span></div>`;
+    onGraded && onGraded(correctCount, items.length);
+  });
+}
+
+/* ---------------- Grammar ---------------- */
+function renderGrammarModule(body, unit){
+  body.appendChild(el(`<p class="subline" style="margin-top:-10px">Answer, then check — you can retry as many times as you like.</p>`));
+  const area = el(`<div></div>`); body.appendChild(area);
+  renderGradableList(area, unit.grammar, async (c,t)=>{
+    if(studentName) await updateStudent(studentName, data=>{ data[unit.id].grammarScore={correct:c,total:t,at:Date.now()}; });
+  }, "Check my answers", "gram");
+}
+
+/* ---------------- Unit Check (quiz) ---------------- */
+function renderQuizModule(body, unit){
+  body.appendChild(el(`<p class="subline" style="margin-top:-10px">A short check covering this unit’s vocabulary and grammar. Your teacher will see your score.</p>`));
+  const area = el(`<div></div>`); body.appendChild(area);
+  renderGradableList(area, unit.quiz, async (c,t)=>{
+    if(studentName) await updateStudent(studentName, data=>{ data[unit.id].quizScore={correct:c,total:t,at:Date.now()}; });
+  }, "Submit check", "quiz");
+}
+
+/* ---------------- Pronunciation ---------------- */
+const TTS = window.speechSynthesis;
+let ttsVoices = [];
+function loadTtsVoices(){ try{ ttsVoices = TTS ? TTS.getVoices() : []; }catch(e){} }
+if(TTS){ loadTtsVoices(); TTS.onvoiceschanged = loadTtsVoices; }
+function pickVoice(accent){
+  // accent: "US" or "GB". Falls back to any English voice, then the browser default.
+  if(!ttsVoices.length) return null;
+  const byLang = ttsVoices.filter(v=>v.lang && v.lang.toLowerCase().startsWith(accent==="GB"?"en-gb":"en-us"));
+  if(byLang.length) return byLang[0];
+  const anyEn = ttsVoices.filter(v=>v.lang && v.lang.toLowerCase().startsWith("en"));
+  return anyEn[0] || ttsVoices[0] || null;
+}
+function speak(text, accent){
+  if(!TTS) return false;
+  try{
+    TTS.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const v = pickVoice(accent||"US");
+    if(v) u.voice = v;
+    u.rate = 0.92;
+    TTS.speak(u);
+    return true;
+  }catch(e){ return false; }
+}
+function renderPronModule(body, unit){
+  if(!TTS){
+    body.appendChild(el(`<div class="card">🔊 This browser can’t play spoken audio for this page. The written pronunciation guide below still works everywhere.</div>`));
+  } else {
+    body.appendChild(el(`<p class="subline" style="margin-top:-10px">Press ▶ to hear it spoken aloud (General American), then check the written guide below each one — say it out loud yourself, the same way you’d sound out a name like “banana → buh-NAN-uh”. Tick it once you’re confident.</p>`));
+  }
+  const list = el(`<div class="stack"></div>`);
+  body.appendChild(list);
+  const doneIds = (studentName && studentCache[slug(studentName)] && studentCache[slug(studentName)][unit.id].pronunciation.done) || [];
+  unit.pronunciation.forEach((item,i)=>{
+    const done = doneIds.includes(i);
+    const respell = item.rp
+      ? `<b>${esc(item.focus)}</b>: ${esc(item.ga)} <span class="mono" style="color:var(--ink-faint)">(GA)</span> &nbsp;·&nbsp; ${esc(item.rp)} <span class="mono" style="color:var(--ink-faint)">(RP)</span>`
+      : `<b>${esc(item.focus)}</b>: ${esc(item.ga)} <span class="mono" style="color:var(--ink-faint)">(GA &amp; RP)</span>`;
+    const row = el(`<div class="prow" style="align-items:flex-start">
+        <div style="flex:1;min-width:200px">
+          <div class="ptarget">${esc(item.text)}</div>
+          <div style="font-size:13.5px;color:var(--ink-soft);margin-top:4px">${respell}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex:none">
+          ${TTS ? `<button class="mic" title="Listen (General American)" data-accent="US">▶</button>
+                   <button class="mic" title="Listen (Received Pronunciation)" data-accent="GB" style="background:var(--ink-soft)">▶ RP</button>` : ""}
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-soft);cursor:pointer">
+            <input type="checkbox" style="width:18px;height:18px;accent-color:var(--success)" ${done?"checked":""}> I can say this
+          </label>
+        </div>
+      </div>`);
+    qsa(".mic", row).forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const ok = speak(item.text, btn.dataset.accent);
+        if(!ok){ btn.title = "Playback unavailable"; }
+      });
+    });
+    qs("input[type=checkbox]", row).addEventListener("change", async (e)=>{
+      if(!studentName) return;
+      await updateStudent(studentName, data=>{
+        const arr = data[unit.id].pronunciation.done || [];
+        data[unit.id].pronunciation.done = e.target.checked ? Array.from(new Set([...arr,i])) : arr.filter(x=>x!==i);
+      });
+    });
+    list.appendChild(row);
+  });
+}
+
+/* ---------------- Writing ---------------- */
+function renderWritingModule(body, unit){
+  const w = unit.writing;
+  const cached = studentName ? (studentCache[slug(studentName)] && studentCache[slug(studentName)][unit.id].writing) : null;
+  body.appendChild(el(`<div class="card stack">
+      <div><b>Task:</b> ${esc(w.prompt)}</div>
+      <div style="font-size:13px;color:var(--ink-soft)">Aim for about ${w.minWords}–${w.maxWords} words.</div>
+      <div id="teacherFb"></div>
+      <textarea id="wtext" placeholder="Write your answer here…">${cached?esc(cached.text):""}</textarea>
+      <div class="wordcount" id="wcount">${cached?wordCount(cached.text):0} words</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-primary" id="wcheck">Submit to teacher</button>
+        <span id="wstatus" style="font-size:13px;color:var(--ink-soft)"></span>
+      </div>
+    </div>`));
+  const ta = qs("#wtext"), wc = qs("#wcount"), btn = qs("#wcheck"), status = qs("#wstatus"), teacherFb = qs("#teacherFb");
+  ta.addEventListener("input", ()=>{ wc.textContent = wordCount(ta.value)+" words"; });
+
+  if(cached && cached.feedback){
+    teacherFb.innerHTML = `<div class="feedbackbox"><span class="ftitle">Feedback from your teacher${cached.feedbackAt?" · "+new Date(cached.feedbackAt).toLocaleDateString():""}</span>${esc(cached.feedback)}</div>`;
+  } else if(cached){
+    teacherFb.innerHTML = `<div style="font-size:13px;color:var(--ink-soft)">Submitted — waiting for your teacher to read it.</div>`;
+  }
+
+  if(!claudeDb){ btn.disabled = true; status.textContent = "Submitting isn’t available in this view."; }
+
+  btn.addEventListener("click", async ()=>{
+    const text = ta.value.trim();
+    if(wordCount(text) < 8){ status.textContent = "Write a bit more first."; return; }
+    if(!studentName){ status.textContent = "Enter your name first."; return; }
+    btn.disabled = true; status.textContent = "Submitting…";
+    await updateStudent(studentName, data=>{
+      const prevFeedback = data[unit.id].writing && data[unit.id].writing.feedback;
+      data[unit.id].writing = { text, wordCount: wordCount(text), at: Date.now(), feedback: null, feedbackAt: null };
+      // keep the old feedback visible until the teacher reviews the new version, rather than hiding it abruptly
+      if(prevFeedback) data[unit.id].writing.previousFeedback = prevFeedback;
+    });
+    status.textContent = "Submitted — your teacher can now read it and leave feedback.";
+    teacherFb.innerHTML = `<div style="font-size:13px;color:var(--ink-soft)">Submitted — waiting for your teacher to read it.</div>`;
+    btn.disabled = false;
+  });
+}
+
+/* ---------------- Games ---------------- */
+function renderGamesModule(body, unit){
+  const wrap = el(`<div class="grid2"></div>`);
+  body.appendChild(wrap);
+  wrap.appendChild(matchGameCard(unit));
+  wrap.appendChild(clockGameCard(unit));
+}
+
+function matchGameCard(unit){
+  const card = el(`<div class="gamecard">
+      <h3>🧩 Match Rally</h3>
+      <div class="gdesc">Click a term, then click its match. Match all pairs as fast as you can.</div>
+      <div class="gamestat" id="mBest">Best time: —</div>
+      <div id="mArea"></div>
+      <button class="btn btn-blue btn-sm" id="mStart">Start round</button>
+    </div>`);
+  const best = qs("#mBest", card), area = qs("#mArea", card);
+  loadBest();
+  async function loadBest(){
+    if(!studentName) return;
+    const d = await loadStudent(studentName);
+    if(d && d[unit.id].games.matchBestMs) best.textContent = "Best time: "+(d[unit.id].games.matchBestMs/1000).toFixed(1)+"s";
+  }
+  qs("#mStart", card).addEventListener("click", ()=>startRound());
+
+  function startRound(){
+    const N = Math.min(6, unit.vocab.length);
+    const pairs = shuffle(unit.vocab).slice(0,N);
+    const left = shuffle(pairs.map((p,i)=>({key:i, text:p.en})));
+    const right = shuffle(pairs.map((p,i)=>({key:i, text:p.de})));
+    let selL=null, selR=null, matched=0, mistakes=0, t0=Date.now(), timerId;
+    area.innerHTML = `<div class="clockrow"><span>⏱ <span class="big mono" id="mTime">0.0</span>s</span><span class="mono" id="mMiss">0 mistakes</span></div>
+      <div class="matchgrid" id="mGrid" style="margin-top:10px"></div>`;
+    const grid = qs("#mGrid", area);
+    left.forEach(item=>grid.appendChild(tile(item,"L")));
+    right.forEach(item=>grid.appendChild(tile(item,"R")));
+    timerId = setInterval(()=>{ qs("#mTime",area).textContent = ((Date.now()-t0)/1000).toFixed(1); }, 100);
+
+    function tile(item, side){
+      const t = el(`<div class="matchtile" data-key="${item.key}" data-side="${side}">${esc(item.text)}</div>`);
+      t.addEventListener("click", ()=>{
+        if(t.classList.contains("ok")) return;
+        if(side==="L"){ if(selL) selL.classList.remove("sel"); selL=t; t.classList.add("sel"); }
+        else { if(selR) selR.classList.remove("sel"); selR=t; t.classList.add("sel"); }
+        if(selL && selR){
+          if(selL.dataset.key===selR.dataset.key){
+            selL.classList.remove("sel"); selR.classList.remove("sel");
+            selL.classList.add("ok"); selR.classList.add("ok");
+            matched++; selL=null; selR=null;
+            if(matched===N){
+              clearInterval(timerId);
+              const ms = Date.now()-t0;
+              qs("#mMiss",area).textContent = mistakes+" mistakes";
+              area.appendChild(el(`<div class="resultbar" style="margin-top:12px"><span class="score mono">${(ms/1000).toFixed(1)}s</span><span class="badge badge-success">All matched · ${mistakes} mistakes</span></div>`));
+              (async ()=>{ if(studentName) await updateStudent(studentName, data=>{
+                const g=data[unit.id].games; if(!g.matchBestMs || ms<g.matchBestMs) g.matchBestMs=ms;
+              }); loadBest(); })();
+            }
+          } else {
+            mistakes++; qs("#mMiss",area).textContent = mistakes+" mistakes";
+            selL.classList.add("bad"); selR.classList.add("bad");
+            setTimeout(()=>{ selL&&selL.classList.remove("sel","bad"); selR&&selR.classList.remove("sel","bad"); selL=null; selR=null; }, 350);
+          }
+        }
+      });
+      return t;
+    }
+  }
+  return card;
+}
+
+function clockGameCard(unit){
+  const card = el(`<div class="gamecard">
+      <h3>⏱ Beat the Clock</h3>
+      <div class="gdesc">45 seconds. Answer as many grammar &amp; vocab questions as you can.</div>
+      <div class="gamestat" id="cBest">Best score: —</div>
+      <div id="cArea"></div>
+      <button class="btn btn-blue btn-sm" id="cStart">Start round</button>
+    </div>`);
+  const best = qs("#cBest", card), area = qs("#cArea", card);
+  loadBest();
+  async function loadBest(){
+    if(!studentName) return;
+    const d = await loadStudent(studentName);
+    if(d && d[unit.id].games.clockBest!=null) best.textContent = "Best score: "+d[unit.id].games.clockBest;
+  }
+  qs("#cStart", card).addEventListener("click", ()=>startRound());
+
+  function startRound(){
+    const pool = shuffle(unit.grammar.filter(x=>x.type==="mcq").concat(unit.quiz.filter(x=>x.type==="mcq")));
+    let idx=0, score=0, timeLeft=45, timerId;
+    area.innerHTML = `<div class="clockrow"><span class="big mono" id="cClock">45</span>s
+        <span class="mono">score: <b id="cScore">0</b></span></div><div id="cQ" style="margin-top:10px"></div>`;
+    const clockEl = qs("#cClock",area), scoreEl = qs("#cScore",area), qEl = qs("#cQ",area);
+    timerId = setInterval(()=>{
+      timeLeft--; clockEl.textContent = timeLeft;
+      if(timeLeft<=0) finish();
+    },1000);
+    nextQ();
+    function nextQ(){
+      if(idx>=pool.length) idx=0;
+      const it = pool[idx++];
+      qEl.innerHTML = "";
+      const box = el(`<div class="qitem"><div class="qtext">${esc(it.q)}</div><div class="options"></div></div>`);
+      const opts = qs(".options",box);
+      it.options.forEach((o,oi)=>{
+        const b = el(`<button class="opt" style="cursor:pointer;width:100%;text-align:left;background:none;font-family:inherit;font-size:14px">${esc(o)}</button>`);
+        b.addEventListener("click", ()=>{
+          qsa(".opt",opts).forEach(x=>x.style.pointerEvents="none");
+          if(oi===it.a){ b.classList.add("correct"); score+=10; scoreEl.textContent=score; }
+          else { b.classList.add("incorrect"); qsa(".opt",opts)[it.a].classList.add("correct"); }
+          setTimeout(()=>{ if(timeLeft>0) nextQ(); }, 500);
+        });
+        opts.appendChild(b);
+      });
+      qEl.appendChild(box);
+    }
+    function finish(){
+      clearInterval(timerId);
+      qEl.innerHTML = "";
+      area.querySelector(".clockrow").innerHTML = `Time’s up!`;
+      area.appendChild(el(`<div class="resultbar" style="margin-top:8px"><span class="score mono">${score} pts</span><span class="badge badge-success">Round complete</span></div>`));
+      (async ()=>{ if(studentName) await updateStudent(studentName, data=>{
+        const g=data[unit.id].games; if(g.clockBest==null || score>g.clockBest) g.clockBest=score;
+      }); loadBest(); })();
+    }
+  }
+  return card;
+}
+
+/* ============================================================
+   TEACHER DASHBOARD
+   ============================================================ */
+function openTeacherLogin(){
+  const backdrop = el(`<div class="modal-backdrop"></div>`);
+  document.body.appendChild(backdrop);
+  renderLoginModal();
+
+  async function renderLoginModal(){
+    backdrop.innerHTML="";
+    if(!claudeDb){
+      backdrop.appendChild(el(`<div class="modal"><h2>Teacher area unavailable</h2><p>Progress tracking isn’t available in this view, so there’s nothing to log into.</p><button class="btn btn-ghost" id="close">Close</button></div>`));
+      qs("#close",backdrop).addEventListener("click", ()=>backdrop.remove());
+      return;
+    }
+    let hasPin=false, existing=null;
+    try{ const snap=await claudeDb.doc("config/teacher").get(); if(snap&&snap.exists){ existing=snap.data(); hasPin=!!(existing&&existing.pin); } }catch(e){}
+    if(!hasPin){
+      backdrop.appendChild(el(`<div class="modal">
+        <h2>Set up your teacher PIN</h2>
+        <p>No PIN exists yet for this class. Choose a 4–6 digit PIN — you’ll use it to open the progress dashboard.</p>
+        <div class="field"><input class="pin-input" id="pin1" type="password" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+        <div class="field"><input class="pin-input" id="pin2" type="password" inputmode="numeric" maxlength="6" placeholder="confirm"></div>
+        <p id="pinErr" style="color:var(--danger);display:none;font-size:12.5px"></p>
+        <div style="display:flex;gap:8px"><button class="btn btn-primary" id="setPin" style="flex:1">Save PIN</button><button class="btn btn-ghost" id="cancelPin">Cancel</button></div>
+      </div>`));
+      qs("#cancelPin",backdrop).addEventListener("click",()=>backdrop.remove());
+      qs("#setPin",backdrop).addEventListener("click", async ()=>{
+        const a=qs("#pin1",backdrop).value.trim(), b=qs("#pin2",backdrop).value.trim();
+        const err=qs("#pinErr",backdrop);
+        if(a.length<4||!/^\d+$/.test(a)){ err.textContent="PIN must be at least 4 digits."; err.style.display="block"; return; }
+        if(a!==b){ err.textContent="PINs don’t match."; err.style.display="block"; return; }
+        try{ await claudeDb.doc("config/teacher").set({pin:a}); backdrop.remove(); enterTeacher(); }
+        catch(e){ err.textContent="Couldn’t save the PIN — please try again."; err.style.display="block"; }
+      });
+      return;
+    }
+    backdrop.appendChild(el(`<div class="modal">
+      <h2>Teacher login</h2>
+      <p>Enter your PIN to view student progress.</p>
+      <div class="field"><input class="pin-input" id="pinTry" type="password" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+      <p id="pinErr2" style="color:var(--danger);display:none;font-size:12.5px">Incorrect PIN.</p>
+      <div style="display:flex;gap:8px"><button class="btn btn-primary" id="doLogin" style="flex:1">Log in</button><button class="btn btn-ghost" id="cancelLogin">Cancel</button></div>
+    </div>`));
+    qs("#cancelLogin",backdrop).addEventListener("click",()=>backdrop.remove());
+    const tryLogin = ()=>{
+      const v=qs("#pinTry",backdrop).value.trim();
+      if(v===existing.pin){ backdrop.remove(); enterTeacher(); }
+      else { qs("#pinErr2",backdrop).style.display="block"; }
+    };
+    qs("#doLogin",backdrop).addEventListener("click", tryLogin);
+    qs("#pinTry",backdrop).addEventListener("keydown", e=>{ if(e.key==="Enter") tryLogin(); });
+    setTimeout(()=>qs("#pinTry",backdrop).focus(),30);
+  }
+}
+
+function enterTeacher(){ isTeacher = true; render(); }
+
+async function renderTeacher(){
+  app.innerHTML = "";
+  const bar = el(`<div class="topbar">
+    <div class="brandmark">EN</div>
+    <div class="brandtext"><b>HAK English Lab</b><span>Teacher dashboard</span></div>
+    <div class="topbar-spacer"></div>
+    <button class="btn btn-ghost btn-sm" id="exportCsv">Export CSV</button>
+    <button class="btn btn-ghost btn-sm" id="changePin">Change PIN</button>
+    <button class="iconbtn" id="exitTeacher" title="Exit">×</button>
+  </div>`);
+  app.appendChild(bar);
+  qs("#exitTeacher",bar).addEventListener("click", ()=>{ isTeacher=false; render(); });
+  qs("#changePin",bar).addEventListener("click", openChangePin);
+  const main = el(`<main class="content" style="max-width:1180px;margin:0 auto"></main>`);
+  app.appendChild(main);
+  main.appendChild(el(`<div class="modheader"><h2>Student progress</h2></div>`));
+  main.appendChild(el(`<p class="subline">Live view of every student who has used the app. Click a row to see writing feedback and detailed scores. There are no passwords, so each row is one login name — if two students ever share a name, their progress merges into one row; the app warns students when they type a name that already has saved progress, but it’s worth telling any duplicates (e.g. two Lenas) to add a last initial.</p>`));
+  const tableSlot = el(`<div id="tableSlot"><p style="color:var(--ink-faint)">Loading…</p></div>`);
+  main.appendChild(tableSlot);
+
+  if(!claudeDb){ tableSlot.innerHTML = `<div class="card">Progress tracking isn’t available in this view.</div>`; return; }
+
+  let students = [];
+  try{
+    const snap = await claudeDb.collection("students").get();
+    students = (snap && snap.docs ? snap.docs.map(d=>d.data()) : []).sort((a,b)=>(b.lastActive||0)-(a.lastActive||0));
+  }catch(e){}
+
+  qs("#exportCsv",bar).addEventListener("click", ()=>exportCsv(students));
+
+  if(!students.length){ tableSlot.innerHTML = `<div class="card">No students yet — once someone enters their name and starts practising, they’ll show up here.</div>`; return; }
+
+  function fmtScore(s){ return s ? `<span class="scorepill">${s.correct}/${s.total}</span>` : "<span style='color:var(--ink-faint)'>—</span>"; }
+  function fmtDate(ts){ if(!ts) return "—"; const d=new Date(ts); return d.toLocaleDateString()+" "+d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}); }
+
+  const table = el(`<table class="dash"><thead><tr>
+      <th>Student</th><th>Last active</th>
+      <th>U1 check</th><th>U2 check</th><th>U3 check</th><th>Gram. review</th>
+      <th>Tasks done</th><th>Writing</th><th>Pronunciation</th>
+    </tr></thead><tbody></tbody></table>`);
+  const tbody = qs("tbody", table);
+  students.forEach(s=>{
+    const tasksDone = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].tasksDone)?s[u].tasksDone.length:0), 0);
+    const writingCount = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].writing)?1:0), 0);
+    const writingNeedsFeedback = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].writing && !s[u].writing.feedback)?1:0), 0);
+    const pronDone = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].pronunciation&&s[u].pronunciation.done)?s[u].pronunciation.done.length:0), 0);
+    const tr = el(`<tr style="cursor:pointer">
+        <td><b>${esc(s.name)}</b></td>
+        <td class="mono">${fmtDate(s.lastActive)}</td>
+        <td>${fmtScore(s.unit1&&s.unit1.quizScore)}</td>
+        <td>${fmtScore(s.unit2&&s.unit2.quizScore)}</td>
+        <td>${fmtScore(s.unit3&&s.unit3.quizScore)}</td>
+        <td>${fmtScore(s.grammarreview&&s.grammarreview.quizScore)}</td>
+        <td class="mono">${tasksDone}</td>
+        <td class="mono">${writingCount}${writingNeedsFeedback>0?` <span class="badge badge-warning" style="margin-left:4px">${writingNeedsFeedback} awaiting feedback</span>`:""}</td>
+        <td class="mono">${pronDone}</td>
+      </tr>`);
+    const detail = el(`<tr class="detailrow" hidden><td colspan="9"></td></tr>`);
+    tr.addEventListener("click", ()=>{
+      detail.hidden = !detail.hidden;
+      if(!detail.hidden) renderStudentDetail(qs("td",detail), s);
+    });
+    tbody.appendChild(tr); tbody.appendChild(detail);
+  });
+  tableSlot.innerHTML=""; tableSlot.appendChild(table);
+}
+
+async function saveTeacherFeedback(studentName, unitId, feedbackText){
+  if(!claudeDb) return;
+  const id = slug(studentName);
+  try{
+    const snap = await claudeDb.doc("students/"+id).get();
+    if(!snap || !snap.exists) return;
+    const data = snap.data();
+    if(!data[unitId] || !data[unitId].writing) return;
+    data[unitId].writing.feedback = feedbackText;
+    data[unitId].writing.feedbackAt = Date.now();
+    await claudeDb.doc("students/"+id).set(data);
+    studentCache[id] = data;
+  }catch(e){ console.warn("saveTeacherFeedback failed", e); }
+}
+
+function renderStudentDetail(container, s){
+  container.innerHTML = "";
+  const wrap = el(`<div class="studentdetail"><div class="grid2"></div></div>`);
+  const grid = qs(".grid2", wrap);
+  UNIT_ORDER.forEach(u=>{
+    const d = s[u]||{};
+    const pronDone = (d.pronunciation && d.pronunciation.done) ? d.pronunciation.done.length : 0;
+    const box = el(`<div>
+      <b>${esc(UNITS[u].label)}</b><br>
+      Vocab: ${d.vocabScore?d.vocabScore.correct+"/"+d.vocabScore.total:"—"} ·
+      Grammar: ${d.grammarScore?d.grammarScore.correct+"/"+d.grammarScore.total:"—"} ·
+      Check: ${d.quizScore?d.quizScore.correct+"/"+d.quizScore.total:"—"}<br>
+      Games — Match: ${d.games&&d.games.matchBestMs?(d.games.matchBestMs/1000).toFixed(1)+"s":"—"},
+      Clock: ${d.games&&d.games.clockBest!=null?d.games.clockBest:"—"}<br>
+      Pronunciation marked confident: ${pronDone}/${UNITS[u].pronunciation.length}
+    </div>`);
+    if(d.writing){
+      const fb = el(`<div class="feedbackbox" style="margin-top:8px">
+        <span class="ftitle">Writing — ${d.writing.wordCount} words, ${new Date(d.writing.at).toLocaleDateString()}</span>
+        <div style="white-space:pre-wrap;margin-bottom:10px">${esc(d.writing.text)}</div>
+        <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--orange);margin-bottom:6px;font-weight:600">Your feedback</label>
+        <textarea class="fbInput" style="min-height:70px;font-size:13.5px" placeholder="Write feedback for ${esc(s.name)}…">${esc(d.writing.feedback||"")}</textarea>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+          <button class="btn btn-primary btn-sm fbSave">Save feedback</button>
+          <span class="fbStatus" style="font-size:12px;color:var(--ink-soft)">${d.writing.feedback?"Feedback given "+(d.writing.feedbackAt?new Date(d.writing.feedbackAt).toLocaleDateString():""):"Not yet given"}</span>
+        </div>
+      </div>`);
+      qs(".fbSave", fb).addEventListener("click", async ()=>{
+        const text = qs(".fbInput", fb).value.trim();
+        const status = qs(".fbStatus", fb);
+        status.textContent = "Saving…";
+        await saveTeacherFeedback(s.name, u, text);
+        status.textContent = "Saved just now.";
+      });
+      box.appendChild(fb);
+    }
+    grid.appendChild(box);
+  });
+  container.appendChild(wrap);
+}
+
+function exportCsv(students){
+  const rows = [["Name","Last active","Unit1 check","Unit2 check","Unit3 check","Grammar review check","Tasks done","Writing submissions","Writing awaiting feedback","Pronunciation phrases marked confident"]];
+  students.forEach(s=>{
+    const tasksDone = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].tasksDone)?s[u].tasksDone.length:0), 0);
+    const writingCount = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].writing)?1:0), 0);
+    const writingNeedsFeedback = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].writing && !s[u].writing.feedback)?1:0), 0);
+    const pronDone = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].pronunciation&&s[u].pronunciation.done)?s[u].pronunciation.done.length:0), 0);
+    const sc = u => s[u]&&s[u].quizScore ? s[u].quizScore.correct+"/"+s[u].quizScore.total : "";
+    rows.push([s.name, s.lastActive?new Date(s.lastActive).toISOString():"", sc("unit1"), sc("unit2"), sc("unit3"), sc("grammarreview"), tasksDone, writingCount, writingNeedsFeedback, pronDone]);
+  });
+  const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
+  const ok = downloadFile("hak-english-lab-progress.csv", csv);
+  if(!ok) alert("Download didn’t start — please copy the table manually.");
+}
+
+function openChangePin(){
+  const backdrop = el(`<div class="modal-backdrop"></div>`);
+  document.body.appendChild(backdrop);
+  backdrop.appendChild(el(`<div class="modal">
+    <h2>Change teacher PIN</h2>
+    <div class="field"><input class="pin-input" id="np1" type="password" inputmode="numeric" maxlength="6" placeholder="new PIN"></div>
+    <div class="field"><input class="pin-input" id="np2" type="password" inputmode="numeric" maxlength="6" placeholder="confirm"></div>
+    <p id="npErr" style="color:var(--danger);display:none;font-size:12.5px"></p>
+    <div style="display:flex;gap:8px"><button class="btn btn-primary" id="npSave" style="flex:1">Save</button><button class="btn btn-ghost" id="npCancel">Cancel</button></div>
+  </div>`));
+  qs("#npCancel",backdrop).addEventListener("click",()=>backdrop.remove());
+  qs("#npSave",backdrop).addEventListener("click", async ()=>{
+    const a=qs("#np1",backdrop).value.trim(), b=qs("#np2",backdrop).value.trim(), err=qs("#npErr",backdrop);
+    if(a.length<4||!/^\d+$/.test(a)){ err.textContent="PIN must be at least 4 digits."; err.style.display="block"; return; }
+    if(a!==b){ err.textContent="PINs don’t match."; err.style.display="block"; return; }
+    try{ await claudeDb.doc("config/teacher").set({pin:a}); backdrop.remove(); }
+    catch(e){ err.textContent="Couldn’t save — try again."; err.style.display="block"; }
+  });
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+function boot(){
+  try{
+    if(typeof firebase === "undefined") throw new Error("Firebase SDK failed to load");
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    claudeDb = firebase.firestore();
+  }catch(e){
+    console.error("Firebase init failed:", e);
+    claudeDb = null;
+  }
+  render();
+  if(studentName) loadStudent(studentName).then(()=>{ if(!isTeacher) render(); });
+}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+
+})();
+</script>
+</body>
+</html>
