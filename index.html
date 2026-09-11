@@ -1,0 +1,2137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAK English Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --paper:#F3F6F8; --surface:#FFFFFF; --surface-alt:#E9EEF2; --line:#D3DCE3;
+    --ink:#14273B; --ink-soft:#4C6072; --ink-faint:#7C8DA0;
+    --blue:#1F5C8B; --blue-deep:#123A57; --blue-tint:#E4EEF5;
+    --orange:#D9782D; --orange-tint:#FBEADA;
+    --success:#2E8B57; --success-tint:#E4F3EA;
+    --danger:#C1443A; --danger-tint:#FBE7E4;
+    --warning:#B8801E; --warning-tint:#FBEFDA;
+    --tab-1:#1F5C8B; --tab-2:#D9782D; --tab-3:#3E8E7E; --tab-4:#7A5FA0;
+    --chrome:#123A57; --chrome-ink:#DCEAF2;
+    --shadow:0 1px 2px rgba(20,39,59,.06), 0 6px 20px -8px rgba(20,39,59,.18);
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0E1B26; --surface:#152531; --surface-alt:#1B2E3E; --line:#2B3F51;
+      --ink:#E7EEF3; --ink-soft:#AFC0CD; --ink-faint:#7C93A3;
+      --blue:#5CA4D6; --blue-deep:#8FC3E8; --blue-tint:#1B3A4C;
+      --orange:#E8934E; --orange-tint:#3A2B1B;
+      --success:#57B98A; --success-tint:#173226;
+      --danger:#E2776B; --danger-tint:#3A1E1C;
+      --warning:#E0B15C; --warning-tint:#3A2E15;
+      --tab-1:#5CA4D6; --tab-2:#E8934E; --tab-3:#5FB39F; --tab-4:#A18BD1;
+      --chrome:#0B1826; --chrome-ink:#CFE0EC;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px -10px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0E1B26; --surface:#152531; --surface-alt:#1B2E3E; --line:#2B3F51;
+    --ink:#E7EEF3; --ink-soft:#AFC0CD; --ink-faint:#7C93A3;
+    --blue:#5CA4D6; --blue-deep:#8FC3E8; --blue-tint:#1B3A4C;
+    --orange:#E8934E; --orange-tint:#3A2B1B;
+    --success:#57B98A; --success-tint:#173226;
+    --danger:#E2776B; --danger-tint:#3A1E1C;
+    --warning:#E0B15C; --warning-tint:#3A2E15;
+    --tab-1:#5CA4D6; --tab-2:#E8934E; --tab-3:#5FB39F; --tab-4:#A18BD1;
+    --chrome:#0B1826; --chrome-ink:#CFE0EC;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px -10px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.disp{font-family:"Archivo", ui-sans-serif, sans-serif; text-wrap:balance;}
+  .mono{font-family:"IBM Plex Mono", ui-monospace, monospace;}
+  a{color:var(--blue);}
+  button{font-family:inherit;}
+  ::selection{background:var(--orange-tint);}
+
+  #app{min-height:100vh; display:flex; flex-direction:column;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    display:flex; align-items:center; gap:14px;
+    padding:12px clamp(16px,3vw,28px);
+    background:var(--chrome); color:#fff;
+    position:sticky; top:0; z-index:40;
+    box-shadow:var(--shadow);
+  }
+  .brandmark{
+    width:38px; height:38px; border-radius:9px; background:var(--orange);
+    display:flex; align-items:center; justify-content:center; flex:none;
+    font-family:"IBM Plex Mono"; font-weight:600; font-size:13px; color:#241305;
+  }
+  .brandtext{display:flex; flex-direction:column; line-height:1.15;}
+  .brandtext b{font-family:"Archivo"; font-size:16px; font-weight:800; letter-spacing:.2px;}
+  .brandtext span{font-size:11.5px; color:var(--chrome-ink); letter-spacing:.4px; text-transform:uppercase;}
+  .topbar-spacer{flex:1;}
+  .topbar .who{
+    display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--chrome-ink);
+    background:rgba(255,255,255,.08); padding:6px 12px; border-radius:999px;
+  }
+  .iconbtn{
+    background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); color:#fff;
+    width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:16px; flex:none;
+  }
+  .iconbtn:hover{background:rgba(255,255,255,.2);}
+  .iconbtn:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{outline:3px solid var(--orange); outline-offset:2px;}
+
+  /* ---------- Shell ---------- */
+  .shell{flex:1; display:flex; align-items:flex-start; max-width:1180px; margin:0 auto; width:100%; gap:0;}
+  .sidebar{
+    width:220px; flex:none; padding:20px 12px 40px; position:sticky; top:66px;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .sidebar .grouplabel{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); padding:10px 12px 6px;}
+  .tab{
+    display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:10px;
+    cursor:pointer; border:1px solid transparent; background:none; width:100%; text-align:left;
+    color:var(--ink-soft); font-size:14.5px; font-weight:600; position:relative;
+  }
+  .tab .stripe{width:5px; height:22px; border-radius:3px; flex:none; background:var(--accent, var(--blue));}
+  .tab small{display:block; font-weight:500; font-size:11.5px; color:var(--ink-faint); margin-top:1px;}
+  .tab:hover{background:var(--surface-alt);}
+  .tab.active{background:var(--surface); border-color:var(--line); color:var(--ink); box-shadow:var(--shadow);}
+  .tab.active .stripe{background:var(--accent, var(--blue));}
+
+  main.content{flex:1; min-width:0; padding:22px clamp(14px,3vw,28px) 60px;}
+
+  /* ---------- Welcome ---------- */
+  .welcome-wrap{max-width:640px; margin:6vh auto; padding:0 16px;}
+  .welcome-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:clamp(24px,5vw,40px);
+    box-shadow:var(--shadow);
+  }
+  .welcome-card h1{font-size:clamp(24px,4vw,32px); margin:2px 0 6px; color:var(--blue-deep);}
+  .welcome-card p.lead{color:var(--ink-soft); margin:0 0 22px; font-size:15px; line-height:1.55;}
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:12.5px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin-bottom:6px;}
+  input[type=text], input[type=password], textarea{
+    width:100%; font-size:15px; padding:11px 13px; border-radius:10px; border:1.5px solid var(--line);
+    background:var(--paper); color:var(--ink); font-family:inherit;
+  }
+  textarea{resize:vertical; min-height:110px; line-height:1.5;}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:11px 20px; border-radius:10px; border:none; cursor:pointer;
+    font-weight:700; font-size:14.5px; font-family:inherit; transition:transform .08s ease;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--orange); color:#2A1608;}
+  .btn-primary:hover{background:#c96c22;}
+  :root[data-theme="dark"] .btn-primary:hover, @media (prefers-color-scheme:dark){ }
+  .btn-blue{background:var(--blue); color:#fff;}
+  .btn-blue:hover{background:var(--blue-deep);}
+  .btn-ghost{background:var(--surface-alt); color:var(--ink);}
+  .btn-ghost:hover{background:var(--line);}
+  .btn-sm{padding:7px 13px; font-size:13px;}
+  .btn[disabled]{opacity:.5; cursor:not-allowed;}
+  .link-btn{background:none; border:none; color:var(--blue); cursor:pointer; font-size:13.5px; font-weight:600; padding:0;}
+
+  /* ---------- Module top / cards ---------- */
+  .modheader{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 16px; margin-bottom:4px;}
+  .modheader h2{font-size:clamp(20px,3vw,26px); margin:0; color:var(--blue-deep);}
+  .pagebadge{font-family:"IBM Plex Mono"; font-size:12px; font-weight:600; color:var(--blue); background:var(--blue-tint); padding:3px 9px; border-radius:999px;}
+  .subline{color:var(--ink-soft); font-size:14px; margin:2px 0 22px;}
+  .infobox{background:var(--orange-tint); border-left:4px solid var(--orange); border-radius:8px; padding:12px 16px; font-size:14px; color:var(--ink-soft); margin:0 0 16px;}
+  .infobox b{color:var(--ink);}
+  .moduletabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:22px; border-bottom:1px solid var(--line); padding-bottom:0;}
+  .mtab{
+    background:none; border:none; padding:9px 14px; font-size:13.5px; font-weight:700; color:var(--ink-faint);
+    cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-1px; font-family:inherit;
+  }
+  .mtab.active{color:var(--blue-deep); border-bottom-color:var(--accent, var(--orange));}
+  .mtab:hover{color:var(--ink);}
+
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow);}
+  .stack{display:flex; flex-direction:column; gap:14px;}
+  .grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px;}
+
+  /* Task cards */
+  .task{display:flex; gap:14px; align-items:flex-start; padding:14px 16px; border:1px solid var(--line); border-radius:12px; background:var(--surface);}
+  .task input[type=checkbox]{width:19px; height:19px; margin-top:3px; accent-color:var(--success); flex:none;}
+  .task .taskmeta{font-family:"IBM Plex Mono"; font-size:11.5px; font-weight:600; color:var(--blue); background:var(--blue-tint); padding:2px 8px; border-radius:6px; white-space:nowrap;}
+  .task .tasktext{font-size:14.5px; line-height:1.5;}
+  .task .taskhint{font-size:13px; color:var(--ink-soft); margin-top:4px; padding-left:2px;}
+  .task .taskhint b{color:var(--orange); font-weight:700;}
+  .task.done{opacity:.55;}
+  .task.done .tasktext{text-decoration:line-through;}
+
+  /* Flashcard */
+  .flashwrap{display:flex; flex-direction:column; align-items:center; gap:16px;}
+  .flashcard{
+    width:min(420px,100%); height:190px; border-radius:16px; cursor:pointer; position:relative;
+    background:linear-gradient(160deg,var(--surface),var(--surface-alt)); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; text-align:center; padding:20px;
+    box-shadow:var(--shadow); font-size:22px; font-weight:700; color:var(--blue-deep);
+  }
+  .flashcard .side-label{position:absolute; top:12px; left:16px; font-family:"IBM Plex Mono"; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-faint);}
+  .flashcard.flip{color:var(--orange);}
+  .flashnav{display:flex; align-items:center; gap:12px;}
+  .flashnav .count{font-family:"IBM Plex Mono"; font-size:13px; color:var(--ink-soft);}
+
+  /* Quiz / grammar items */
+  .qitem{border:1px solid var(--line); border-radius:12px; padding:14px 16px; background:var(--surface);}
+  .qitem .qtext{font-size:14.5px; margin-bottom:10px; line-height:1.5;}
+  .options{display:flex; flex-direction:column; gap:7px;}
+  .opt{display:flex; align-items:center; gap:9px; padding:9px 12px; border:1.5px solid var(--line); border-radius:9px; cursor:pointer; font-size:14px;}
+  .opt:hover{background:var(--surface-alt);}
+  .opt.selected{border-color:var(--blue); background:var(--blue-tint);}
+  .opt.correct{border-color:var(--success); background:var(--success-tint);}
+  .opt.incorrect{border-color:var(--danger); background:var(--danger-tint);}
+  .opt input{accent-color:var(--blue);}
+  .qitem.graded-correct{border-left:4px solid var(--success);}
+  .qitem.graded-incorrect{border-left:4px solid var(--danger);}
+  .qanswerline{font-size:13px; margin-top:8px; padding-top:8px; border-top:1px dashed var(--line); color:var(--ink-soft);}
+  .qanswerline b{color:var(--success);}
+
+  .resultbar{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    padding:14px 18px; border-radius:12px; background:var(--blue-tint); border:1px solid var(--line);
+  }
+  .resultbar .score{font-family:"IBM Plex Mono"; font-size:22px; font-weight:600; color:var(--blue-deep);}
+  .badge{display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px;}
+  .badge-success{background:var(--success-tint); color:var(--success);}
+  .badge-warning{background:var(--warning-tint); color:var(--warning);}
+  .badge-info{background:var(--blue-tint); color:var(--blue);}
+
+  /* Pronunciation */
+  .prow{display:flex; align-items:center; gap:14px; padding:12px 16px; border:1px solid var(--line); border-radius:12px; background:var(--surface); flex-wrap:wrap;}
+  .prow .ptarget{flex:1; min-width:160px; font-size:15px; font-weight:600;}
+  .mic{
+    height:36px; padding:0 14px; border-radius:999px; border:none; background:var(--blue); color:#fff; font-size:13px; font-weight:700;
+    cursor:pointer; flex:none; display:flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap;
+  }
+  .mic:hover{filter:brightness(1.08);}
+
+  /* Writing */
+  .wordcount{font-family:"IBM Plex Mono"; font-size:12.5px; color:var(--ink-faint); margin-top:6px;}
+  .feedbackbox{
+    margin-top:14px; padding:16px 18px; border-radius:12px; background:var(--orange-tint); border:1px solid var(--line);
+    font-size:14px; line-height:1.6; white-space:pre-wrap;
+  }
+  .feedbackbox .ftitle{font-family:"IBM Plex Mono"; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--orange); margin-bottom:8px; display:block; font-weight:600;}
+
+  /* Games */
+  .gamecard{border:1px solid var(--line); border-radius:14px; padding:18px; background:var(--surface); display:flex; flex-direction:column; gap:10px;}
+  .gamecard h3{margin:0; font-size:16.5px;}
+  .gamecard .gdesc{font-size:13.5px; color:var(--ink-soft); line-height:1.5;}
+  .gamestat{font-family:"IBM Plex Mono"; font-size:12.5px; color:var(--ink-faint);}
+  .matchgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px 18px;}
+  .matchtile{
+    padding:10px 12px; border:1.5px solid var(--line); border-radius:9px; background:var(--surface-alt);
+    cursor:pointer; font-size:13.5px; text-align:center; min-height:44px; display:flex; align-items:center; justify-content:center;
+  }
+  .matchtile.sel{border-color:var(--blue); background:var(--blue-tint);}
+  .matchtile.ok{border-color:var(--success); background:var(--success-tint); cursor:default; opacity:.75;}
+  .matchtile.bad{border-color:var(--danger); background:var(--danger-tint); animation:shake .3s;}
+  @keyframes shake{25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+  .clockrow{display:flex; align-items:center; gap:16px; font-family:"IBM Plex Mono"; font-size:14px;}
+  .clockrow .big{font-size:26px; font-weight:600;}
+
+  /* Teacher */
+  .modal-backdrop{position:fixed; inset:0; background:rgba(10,20,30,.55); display:flex; align-items:center; justify-content:center; z-index:100; padding:16px;}
+  .modal{background:var(--surface); border-radius:16px; padding:28px; width:min(380px,100%); box-shadow:var(--shadow); border:1px solid var(--line);}
+  .modal h2{margin:0 0 6px; font-size:19px; color:var(--blue-deep);}
+  .modal p{font-size:13.5px; color:var(--ink-soft); margin:0 0 16px;}
+  .pin-input{letter-spacing:.4em; text-align:center; font-family:"IBM Plex Mono"; font-size:20px;}
+  table.dash{width:100%; border-collapse:collapse; font-size:13.5px;}
+  table.dash th{text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); padding:8px 10px; border-bottom:2px solid var(--line);}
+  table.dash td{padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.dash tr:hover td{background:var(--surface-alt);}
+  .scorepill{font-family:"IBM Plex Mono"; font-size:12px; padding:2px 8px; border-radius:6px; background:var(--surface-alt); white-space:nowrap;}
+  .studentdetail{background:var(--surface-alt); border-radius:10px; padding:14px 16px; margin-top:6px; font-size:13px;}
+  .toolbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:16px;}
+
+  footer.hint{max-width:1180px; margin:0 auto; padding:10px clamp(16px,3vw,28px) 30px; font-size:12px; color:var(--ink-faint);}
+
+  @media (max-width:820px){
+    .shell{flex-direction:column;}
+    .sidebar{position:static; width:100%; flex-direction:row; overflow-x:auto; padding:12px 12px 6px; gap:8px;}
+    .sidebar .grouplabel{display:none;}
+    .tab{flex-direction:column; align-items:flex-start; min-width:132px; gap:4px;}
+    .tab .stripe{width:100%; height:4px;}
+  }
+  [hidden]{display:none !important;}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+<footer class="hint">HAK English Lab &middot; pilot build &middot; Units 1&ndash;10 &middot; Business in Context 2. HAK</footer>
+
+<!-- Firebase (compat API — matches the app's existing db.doc()/db.collection() calls) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   CONTENT DATA — Units 1–10
+   ============================================================ */
+function mcq(q, options, a){ return {type:"mcq", q, options, a}; }
+function tf(q, accepted){ return {type:"text", q, accepted}; }
+/* Pronunciation item: spoken via the browser's built-in text-to-speech (no microphone needed),
+   plus a written "banana buh-NAN-uh"-style respelling of the key word. rp is only set when
+   Received Pronunciation actually differs from General American (mainly non-rhotic r-dropping). */
+function pr(text, focus, ga, rp){ return {text, focus, ga, rp: rp||null}; }
+
+const UNITS = {
+
+unit1: {
+  id:"unit1", order:1, label:"Unit 1", title:"This is where we belong", pages:"p. 12–21", accent:"var(--tab-1)",
+  tasks: [
+    {page:"12", ex:"1", instr:"Word power: definitions. Match the words (1–7) from the text “Multicultural Europe” to the definitions (A–E). Two words do not have a definition — write your own.", hint:"Skim the text first, then find each word in context before choosing a definition."},
+    {page:"13", ex:"2", instr:"Synonyms & antonyms. Complete the exercise using the text on p. 12.", hint:"Decide first whether you need a word with the same or the opposite meaning."},
+    {page:"13", ex:"3", instr:"Gap-fill dialogue. Complete the dialogue using the words from exercise 2.", hint:"Finish exercise 2 first — this exercise reuses those exact words."},
+    {page:"13", ex:"4", instr:"Collocations. Match the collocations that belong together.", hint:"Say each pair out loud — a correct collocation should sound natural to you."},
+    {page:"17", ex:"7", instr:"Discussing youth statistics. Study one infographic on your own, then discuss your findings in a small group and prepare to report back to the class.", hint:"Use the trend phrases from the Vocabulary tab (“a significant rise”, “just under a third” …) in your notes."},
+    {page:"18", ex:"1", instr:"Preparing to listen. Discuss with a partner: what problems — and what positive things — might happen when sharing a flat with other young adults?", hint:"Think about six aspects: entertainment, family, food, language, privacy, socialising."},
+    {page:"18", ex:"2", instr:"Listening: note-taking (Track 2). Listen to the interview with Nagesh, Ryan, Hassan and Ji-hoon and complete their profiles (country, religion, food preferences).", hint:"On your first listen, focus only on country and religion — food comes on the second listen."},
+    {page:"19", ex:"3", instr:"Listening: multiple choice (Track 2). Choose the correct answer (A, B, C or D) for questions 1–6.", hint:"Read all four options before you listen again — two options often sound similar."},
+    {page:"20", ex:"4", instr:"Listening for detail (Track 2). Answer the three questions in your own words, then compare your answers with a partner.", hint:""},
+    {page:"20", ex:"5", instr:"Grammar in use: reported questions. Rewrite the six direct questions as reported questions.", hint:"No question word order, no do/does/did, backshift the tense — see the Grammar tab for the rule."},
+    {page:"20", ex:"6", instr:"Discussion: multicultural flatshare. Discuss what would be best about it, what might be a problem, and how you would solve it. Report your ideas to the class.", hint:""},
+    {page:"21", ex:"—", instr:"“Can do” self-assessment. Fill in the table: what can you already do after Unit 1?", hint:""},
+  ],
+  vocab: [
+    {en:"multicultural", de:"multikulturell"},
+    {en:"to belong somewhere", de:"irgendwo dazugehören"},
+    {en:"flatmate", de:"Mitbewohner:in"},
+    {en:"to share a flat", de:"sich eine Wohnung teilen"},
+    {en:"youth unemployment", de:"Jugendarbeitslosigkeit"},
+    {en:"a significant rise", de:"ein deutlicher Anstieg"},
+    {en:"a sharp decline", de:"ein starker Rückgang"},
+    {en:"just under a third", de:"knapp ein Drittel"},
+    {en:"nearly one in five", de:"fast jede:r Fünfte"},
+    {en:"the majority of", de:"die Mehrheit von"},
+    {en:"vegetarian", de:"Vegetarier:in"},
+    {en:"religion", de:"Religion"},
+    {en:"to accept differences", de:"Unterschiede akzeptieren"},
+    {en:"cultural background", de:"kultureller Hintergrund"},
+    {en:"privacy", de:"Privatsphäre"},
+    {en:"attitude", de:"Einstellung"},
+  ],
+  grammarFocus: "Reported questions",
+  grammarExplanation: "When you report a question someone asked, the word order changes back to normal statement order (no more do/does/did), and the tense usually shifts one step into the past. Yes/no questions are introduced with <b>if</b> or <b>whether</b>; wh-questions keep the question word but lose the question word order. <b>Example:</b> “Where do you live?” → <i>She asked me where I lived.</i>",
+  grammar: [
+    mcq("“Do you like curry?” → She asked me ___ I liked curry.", ["if","that","why","do"], 0),
+    mcq("“Where do you live?” → He asked me where I ___.", ["live","lived","do live","had lived"], 1),
+    mcq("“Have you finished?” → The teacher asked if we ___ finished.", ["have","had","has","having"], 1),
+    mcq("“What time does the shop close?” → Ryan asked what time the shop ___.", ["closes","closed","close","is closing"], 1),
+    mcq("“Are you eating properly?” → His mother asked if he ___ eating properly.", ["is","was","be","been"], 1),
+    tf("“Why did you choose this flat?” → The reporter asked Nagesh why he ___ that flat. (one word or phrase)", ["had chosen","chose"]),
+    mcq("“Can I use your pan?” → Ji-hoon asked Nagesh if he could use ___ pan.", ["your","his","my","their"], 1),
+    mcq("Which pattern is correct for reporting a yes/no question?", ["asked if/whether + statement word order","asked + question word order","asked that + infinitive","asked do + base form"], 0),
+  ],
+  pronunciation: [
+    pr("multicultural","multicultural","muhl-tee-KUHL-chuh-ruhl"),
+    pr("a significant rise","significant","sig-NIF-ih-kuhnt"),
+    pr("flatmate","flatmate","FLAT-mayt"),
+    pr("I would like to share a flat.","share","SHAIR","SHEH"),
+    pr("nearly one in five","nearly","NEER-lee","NEE-uh-lee"),
+    pr("vegetarian","vegetarian","vej-uh-TAIR-ee-uhn"),
+    pr("What does it mean to belong somewhere new?","belong","buh-LONG"),
+    pr("the majority of young people","majority","muh-JOR-ih-tee"),
+  ],
+  writing: {prompt:"Would you like to share a flat with people from different cultures one day? Why or why not? Mention one advantage and one possible challenge.", minWords:40, maxWords:70},
+  quiz: [
+    mcq("What does “a sharp decline” mean?", ["a steep decrease","a slow increase","staying the same","a small rise"], 0),
+    mcq("“Just under a third” means about:", ["20%","30%","45%","60%"], 1),
+    mcq("Choose the correct reported question. Direct: “Where do you live?”", ["He asked me where I lived.","He asked me where do I live.","He asked me where I live.","He asked where lived I."], 0),
+    mcq("A “flatmate” is someone who…", ["owns your flat","shares a flat with you","cleans flats for a job","sells flats"], 1),
+    mcq("“The majority of” means:", ["less than half","about half","more than half","none"], 2),
+    mcq("“Do you like curry?” → She asked me ___ I liked curry.", ["if","that","because","when"], 0),
+    mcq("“Privacy” in German is:", ["Öffentlichkeit","Privatsphäre","Sicherheit","Freiheit"], 1),
+    mcq("Which word introduces a reported yes/no question?", ["that","if","when","because"], 1),
+  ],
+},
+
+unit2: {
+  id:"unit2", order:2, label:"Unit 2", title:"School life", pages:"p. 28–37", accent:"var(--tab-2)",
+  tasks: [
+    {page:"28", ex:"1a", instr:"Word power: mind map. Copy the mind map and complete it using highlighted words from the text “The best days of our lives?”.", hint:"The four branches match the text’s four subheadings: time management, expectations, conflict, bullying."},
+    {page:"29", ex:"1b", instr:"Use the completed mind map to talk about your own school life with a partner.", hint:""},
+    {page:"29", ex:"2a", instr:"Word families. Complete the verb → noun table.", hint:"Use a dictionary if you need to."},
+    {page:"29", ex:"3", instr:"Collocations. Find verbs in the text that go with: expectations, problem, assignment, relief, situation.", hint:"All five verbs appear word-for-word in the text on p. 28."},
+    {page:"29", ex:"2b", instr:"Writing. Write advice for improving school life, using your answers from exercise 1a.", hint:""},
+    {page:"30", ex:"1", instr:"Preparing to read. Look at the title and introduction: what type of text is this? Justify your guess with a partner.", hint:""},
+    {page:"30–31", ex:"2", instr:"Reading: multiple matching. Choose the correct missing part (A–I) for each gap (1–6). Two extra parts are not used.", hint:"Read the whole text once first without worrying about the gaps, then check each gap in its sentence context."},
+    {page:"31", ex:"3", instr:"Reading for detail. Answer the five detail questions about the UNESCO report.", hint:""},
+    {page:"31", ex:"4a", instr:"Language in use: signposting phrases. Categorise the phrases by function (contrast, consequence, explanation, example).", hint:""},
+    {page:"32", ex:"4b", instr:"Use the signposting phrases from 4a to complete the education-fairness text.", hint:"Each phrase is used exactly once."},
+    {page:"32", ex:"5a–5b", instr:"Working with words: antonyms. Find opposite-meaning words in the text, then use them to complete the Sierra Leone text.", hint:""},
+    {page:"33", ex:"6", instr:"Think – pair – share. Imagine you had forgotten how to read. Write a short campaign paragraph beginning “If you can’t read, you can’t …”.", hint:""},
+    {page:"33", ex:"7", instr:"Writing: informal letter. Reply to your penfriend Chrissie (about 200 words): language-learning methods, types of German, and why speaking German well matters for her visit.", hint:""},
+    {page:"34", ex:"1a–1b", instr:"Preparing to listen. Discuss your sleep habits, then match activism vocabulary to definitions.", hint:""},
+    {page:"35", ex:"2–3", instr:"Listening (Track 5). Answer the note-form questions, then tick the sleep benefits that are mentioned.", hint:"Read all nine questions first and underline key words before you listen."},
+    {page:"35", ex:"4", instr:"Speaking: individual long turn. Compare two protest methods, evaluate them, and give your own idea for creating change.", hint:""},
+    {page:"36", ex:"5", instr:"Reading for gist. Match each heading to the best place in the advice text.", hint:"Read only the first sentence of each paragraph — the main idea is usually there."},
+    {page:"36", ex:"6", instr:"Listening for gist (Track 6). Match each teenager’s story to the best piece of advice.", hint:""},
+    {page:"37", ex:"—", instr:"Grammar in use: if-clauses I. Complete the six sentences with the correct verb forms.", hint:"if + Present Simple, … will + base verb."},
+    {page:"37", ex:"7", instr:"Group task: achieving change. Brainstorm a school issue, describe “how things are” vs. “how things should be”, plan up to five steps, and report back.", hint:""},
+  ],
+  vocab: [
+    {en:"to manage your time", de:"seine Zeit einteilen"},
+    {en:"expectation", de:"Erwartung"},
+    {en:"conflict", de:"Konflikt"},
+    {en:"bullying", de:"Mobbing"},
+    {en:"assignment", de:"Arbeitsauftrag"},
+    {en:"relief", de:"Erleichterung"},
+    {en:"to drop out of school", de:"die Schule abbrechen"},
+    {en:"literacy", de:"Lese- und Schreibfähigkeit"},
+    {en:"poverty", de:"Armut"},
+    {en:"disability", de:"Behinderung"},
+    {en:"petition", de:"Petition"},
+    {en:"to spread the word", de:"etwas bekannt machen"},
+    {en:"movement (social)", de:"(soziale) Bewegung"},
+    {en:"alert (adj.)", de:"wach, aufmerksam"},
+  ],
+  grammarFocus: "If-clauses I & signposting phrases",
+  grammarExplanation: "Type-1 if-clauses (<b>if + Present Simple, … will + base verb</b>) describe a real, likely condition in the future. Signposting phrases like <i>however</i>, <i>as a result</i> and <i>for example</i> help your reader follow your argument by showing contrast, consequence or illustration. <b>Example:</b> <i>If we break the rules, we will get into trouble.</i>",
+  grammar: [
+    mcq("If they ___ (concentrate) on one problem, they will have a better chance of success.", ["concentrate","concentrated","will concentrate","concentrating"], 0),
+    mcq("If we ___ (get) angry, people won’t take our arguments seriously.", ["get","got","will get","getting"], 0),
+    mcq("People may accuse you of bullying if you ___ (criticize) an individual.", ["criticize","criticized","will criticize","criticizing"], 0),
+    mcq("If we break the school rules, we ___ (get) into trouble.", ["get","will get","got","would get"], 1),
+    mcq("Which phrase signals a contrast?", ["As a result","However","For example","That means"], 1),
+    mcq("Which phrase signals a consequence?", ["On the other hand","However","As a result","For example"], 2),
+    tf("Give an antonym of “advanced” used in the UNESCO text.", ["backward","underdeveloped"]),
+    tf("Give an antonym of “fortunate”.", ["unfortunate"]),
+  ],
+  pronunciation: [
+    pr("time management","management","MAN-ij-muhnt"),
+    pr("unrealistic expectations","expectations","ek-spek-TAY-shuhnz"),
+    pr("a significant conflict","conflict","KON-flikt"),
+    pr("literacy","literacy","LIT-uh-ruh-see"),
+    pr("to drop out of school","drop out","DROP owt"),
+    pr("If we break the rules, we will get into trouble.","trouble","TRUH-buhl"),
+    pr("petition","petition","puh-TISH-uhn"),
+    pr("a good night’s sleep","sleep","SLEEP"),
+  ],
+  writing: {prompt:"Write advice for improving school life. Choose ONE challenge — time management, expectations, conflict, or bullying — and give at least three pieces of practical advice.", minWords:60, maxWords:90},
+  quiz: [
+    mcq("“Bullying” means:", ["helping a classmate","repeatedly hurting or scaring someone","doing homework together","winning a competition"], 1),
+    mcq("If we always give up at the first problem, ___.", ["nothing will change","nothing changes","nothing changed","nothing would change"], 0),
+    mcq("“Literacy” is the ability to:", ["run fast","read and write","speak two languages","use a computer"], 1),
+    mcq("Which phrase introduces an example?", ["However","As a result","For example","That means"], 2),
+    mcq("“Relief” means:", ["a feeling of stress","a feeling of comfort after stress ends","an assignment","a conflict"], 1),
+    mcq("If they concentrate on one problem, they ___ a better chance of success.", ["will have","have","had","would have"], 0),
+    mcq("“To drop out of school” means to:", ["graduate early","study abroad","leave school before finishing","repeat a year"], 2),
+    mcq("A “petition” is:", ["a formal request signed by many people","a type of exam","a school rule","a class trip"], 0),
+  ],
+},
+
+unit3: {
+  id:"unit3", order:3, label:"Unit 3", title:"First career steps", pages:"p. 38–49", accent:"var(--tab-3)",
+  tasks: [
+    {page:"38", ex:"—", instr:"Read “Four steps to planning your career”: self-assessment, exploration, decision-making, gaining experience.", hint:"Mark the four bold subheadings first to see the text’s structure."},
+    {page:"39", ex:"1a", instr:"Word power: collocations. Find verbs in the text that go with: decision, experience, goal, information, option, skill.", hint:""},
+    {page:"39", ex:"1b", instr:"Compounds with “career”. Find career-compounds in the text to complete Joel’s blog post.", hint:"All the compounds appear word-for-word on p. 38."},
+    {page:"39", ex:"2", instr:"Word families. Complete the verb → noun and noun → adjective tables.", hint:"Use a dictionary if you need to."},
+    {page:"39", ex:"3", instr:"Career advice. Give a partner advice using vocabulary from exercises 1 and 2.", hint:""},
+    {page:"40", ex:"1", instr:"Preparing to read. Discuss: what do you know about internships? Why do job seekers and companies want them?", hint:""},
+    {page:"40–41", ex:"2", instr:"Reading: true/false with justification. Decide T/F for statements 1–7 and quote the first four words of the supporting sentence.", hint:"For a false statement, the sentence you quote usually states the opposite fact."},
+    {page:"42", ex:"3", instr:"Reading for detail: internship popularity, what young people hope to gain, why unpaid internships are unfair, and a contrast with a “fair and transparent” system.", hint:""},
+    {page:"42", ex:"4a–4b", instr:"Collocations. Find verb+noun expressions with career / internship / workforce, then complete the brochure text.", hint:""},
+    {page:"42–43", ex:"5a–5b", instr:"Grammar: the passive. Underline passive examples in the text, then complete the dialogue with the correct passive forms.", hint:"First decide: who or what performs the action — is it unknown, unimportant, or obvious? See the Grammar tab."},
+    {page:"43", ex:"6", instr:"Writing: formal email. Write a ~200-word email inviting Daniel O’Brien to speak at your school: introduce yourself, explain your connection, say what you’d like him to talk about, describe the audience.", hint:""},
+    {page:"44", ex:"1a–1c", instr:"Preparing to listen. Match jobs to photos, then discuss blue-/white-/pink-collar categories and the term “glass ceiling”.", hint:""},
+    {page:"44–45", ex:"2", instr:"Listening: multiple matching (Track 7). Match sentence beginnings (1–8) to endings (A–K); two endings are not used.", hint:"Skim all beginnings AND all endings before you listen."},
+    {page:"45", ex:"3a–3b", instr:"Word families. Complete the table, then use your answers to complete the text.", hint:""},
+    {page:"46", ex:"Extra", instr:"Make two lists: jobs with an obvious gender bias, and jobs that are equally balanced.", hint:""},
+    {page:"46", ex:"4a–4b", instr:"Discussion & statement. Discuss which speakers you agree/disagree with, then write a group statement on gender equality in professions.", hint:""},
+    {page:"46", ex:"5", instr:"Speaking: interaction. Role-play a careers-fair conversation about a profession’s gender balance.", hint:""},
+    {page:"47", ex:"1", instr:"Reading for detail. Highlight the employer’s key activities, required skills, and conditions of employment in the Expedit internship advertisement.", hint:"Use three different colours for the three categories."},
+    {page:"48–49", ex:"2", instr:"Writing: application form. Complete the application form with your own (or invented) details.", hint:""},
+    {page:"49", ex:"Extra", instr:"Covering letter. Write a ~200-word covering letter: introduce yourself, state the position, explain why you want it and why you’re suitable, close politely.", hint:""},
+  ],
+  vocab: [
+    {en:"self-assessment", de:"Selbsteinschätzung"},
+    {en:"to gain experience", de:"Erfahrung sammeln"},
+    {en:"internship", de:"Praktikum"},
+    {en:"unpaid", de:"unbezahlt"},
+    {en:"to advertise a job", de:"eine Stelle ausschreiben"},
+    {en:"workforce", de:"Belegschaft"},
+    {en:"blue-collar job", de:"Arbeiterberuf"},
+    {en:"white-collar job", de:"Büroberuf"},
+    {en:"glass ceiling", de:"gläserne Decke"},
+    {en:"discrimination", de:"Diskriminierung"},
+    {en:"applicant", de:"Bewerber:in"},
+    {en:"covering letter", de:"Bewerbungsschreiben"},
+    {en:"to be suitable for", de:"geeignet sein für"},
+    {en:"qualification", de:"Qualifikation"},
+  ],
+  grammarFocus: "The passive",
+  grammarExplanation: "We use the passive (<b>to be + past participle</b>) when the person or thing doing the action is unknown, unimportant, or already obvious — the focus shifts to what happens, not who does it. <b>Example:</b> <i>Internships are advertised online.</i> (Active: <i>Companies advertise internships online.</i>)",
+  grammar: [
+    mcq("Internships ___ (advertise) online.", ["advertise","are advertised","advertised","is advertising"], 1),
+    mcq("The position ___ (already / fill).", ["has already filled","has already been filled","was already filling","is already filling"], 1),
+    mcq("The candidates ___ (interview) next week.", ["will interview","will be interviewed","are interviewing","interviewed"], 1),
+    mcq("Mobile phones ___ (not / allow) in class.", ["don’t allow","aren’t allowed","isn’t allowed","not allowed"], 1),
+    mcq("This position ___ (advertise) publicly if the process were fair.", ["would be advertised","would advertise","will advertise","is advertised"], 0),
+    tf("Passive of: “The manager pays interns a small allowance.” (write the new subject + verb)", ["interns are paid a small allowance","interns are paid a small allowance by the manager"]),
+    mcq("Which sentence is in the passive?", ["The company offers internships.","Internships are offered every summer.","We offer internships.","They will offer internships."], 1),
+    mcq("We use the passive mainly when:", ["the agent is unknown or unimportant","we want to sound informal","we are giving direct orders","we are asking a question"], 0),
+  ],
+  pronunciation: [
+    pr("internship","internship","IN-turn-ship","IN-tuhn-ship"),
+    pr("workforce","workforce","WURK-fors","WUHK-fohs"),
+    pr("the glass ceiling","glass ceiling","GLAS SEE-ling","GLAHSS SEE-ling"),
+    pr("Internships are advertised online.","advertised","AD-ver-tyzd","AD-vuh-tyzd"),
+    pr("applicant","applicant","AP-lih-kuhnt"),
+    pr("covering letter","covering letter","KUHV-uh-ring LET-er","KUHV-uh-ring LET-uh"),
+    pr("I am writing to apply for this position.","position","puh-ZISH-uhn"),
+    pr("qualification","qualification","kwol-ih-fih-KAY-shuhn"),
+  ],
+  writing: {prompt:"Write the opening of a covering letter: introduce yourself, say which internship or job you are applying for, and give ONE reason why you would be a suitable candidate.", minWords:60, maxWords:90},
+  quiz: [
+    mcq("“Glass ceiling” refers to:", ["a type of office window","an invisible barrier stopping women/minorities reaching top jobs","a rule about dress code","a company logo"], 1),
+    mcq("Passive of: “The manager will interview the candidates.”", ["The candidates will interview.","The candidates will be interviewed.","The candidates are interviewed.","The candidates interviewed."], 1),
+    mcq("“Unpaid” means:", ["paid extra","paid normally","not paid at all","paid once a year"], 2),
+    mcq("A “covering letter” is sent:", ["instead of a CV","together with a job application, to introduce yourself","only after getting the job","to resign from a job"], 1),
+    mcq("Passive of: “Someone has already filled the position.”", ["The position has already been filled.","The position was already filled by someone.","The position is already filled.","The position had already filled."], 0),
+    mcq("“Blue-collar” jobs typically involve:", ["office paperwork","physical or manual work","managing a company","teaching"], 1),
+    mcq("“Applicant” means:", ["Bewerber:in","Arbeitgeber:in","Kolleg:in","Chef:in"], 0),
+    mcq("The passive is formed with “to be” + the:", ["infinitive","past participle","present participle","gerund"], 1),
+  ],
+},
+
+unit4: {
+  id:"unit4", order:4, label:"Unit 4", title:"Shopping today and online business", pages:"p. 54–63", accent:"var(--tab-4)",
+  tasks: [
+    {page:"54", ex:"1", instr:"Word power: mind map. Draw a mind map for “internet shopping” using highlighted words from the text on p. 54.", hint:"The text’s own subheadings (sellers, buyers, delivery) are a good starting point for your branches."},
+    {page:"55", ex:"2", instr:"Statistics on exercise… on internet shopping. Look at the infographic and discuss the questions with a partner.", hint:""},
+    {page:"56", ex:"1", instr:"Photo sequencing. Put the photos of a warehouse order into the correct order, from order placed to delivery.", hint:"Think about the real-life order: order → picking → packing → conveyor belt → courier."},
+    {page:"56–57", ex:"2", instr:"Reading comprehension: true/false. Decide whether statements 1–7 about warehouses are true or false and justify your answer with a quote.", hint:""},
+    {page:"58", ex:"3", instr:"Reading for detail. Answer the questions about numbers and figures mentioned in the text.", hint:"Scan for numbers first, then re-read the sentence around each one."},
+    {page:"58", ex:"5", instr:"Word power: photo matching. Match the words (cardboard box, computer screen, conveyor belt, customer label, pallet, robotic arm) to the photos.", hint:""},
+    {page:"58", ex:"6", instr:"Grammar in use: the passive. Rewrite the sentences about the warehouse process using the passive voice.", hint:"Ask: who or what performs the action — is it unknown, unimportant, or obvious? See the Grammar tab."},
+    {page:"59", ex:"7", instr:"Grammar in use: relative clauses. Complete the sentences about the fulfilment system using who, which or whose.", hint:""},
+    {page:"59", ex:"8–9", instr:"Group task: plan how your class could set up a simple online shop. Report your plan to the class.", hint:""},
+    {page:"60", ex:"1", instr:"Listening (Track 8). Listen and note down the numbers and statistics you hear about clothing waste.", hint:""},
+    {page:"60–61", ex:"2", instr:"Listening comprehension: multiple choice (Track 9). Choose the correct answer for each of the interviewees (Liz, Fay, Ella).", hint:"Read all four options before you listen — some only differ in a small detail."},
+    {page:"61", ex:"3", instr:"Listening for detail. Listen again and answer the detail questions in your own words.", hint:""},
+    {page:"61–62", ex:"4a–4b", instr:"Rephrasing & blog gap-fill. Use the vocabulary (wardrobe, sustainable, jumble sale, charity shop, to swap, to hire, consumption) to complete the blog post.", hint:""},
+    {page:"62", ex:"5", instr:"Grammar in use: gerunds. Complete the sentences with the correct -ing form.", hint:"Look at the word right before the gap — is it a verb, or a preposition?"},
+    {page:"62", ex:"6", instr:"Think – pair – share: discuss the effects of fast fashion on the environment and possible solutions.", hint:""},
+    {page:"63", ex:"7", instr:"Writing: blog comment. Post a comment on the fast-fashion blog: give your opinion, explain one effect of fast fashion, and suggest one way to reduce it.", hint:""},
+  ],
+  vocab: [
+    {en:"warehouse", de:"Lagerhaus"},
+    {en:"conveyor belt", de:"Förderband"},
+    {en:"robotic arm", de:"Roboterarm"},
+    {en:"pallet", de:"Palette"},
+    {en:"courier", de:"Kurier:in"},
+    {en:"to place an order", de:"eine Bestellung aufgeben"},
+    {en:"picker/packer", de:"Kommissionierer:in/Verpacker:in"},
+    {en:"QR code", de:"QR-Code"},
+    {en:"wardrobe", de:"Kleiderschrank"},
+    {en:"sustainable", de:"nachhaltig"},
+    {en:"to swap", de:"tauschen"},
+    {en:"charity shop", de:"Wohltätigkeits-/Second-Hand-Laden"},
+    {en:"jumble sale", de:"Flohmarkt/Kleiderbasar"},
+    {en:"consumption", de:"Konsum"},
+    {en:"to hire (BE)", de:"(ver)mieten"},
+  ],
+  grammarFocus: "The passive · relative clauses · gerunds",
+  grammarExplanation: "This unit revisits the passive for describing processes (e.g. in a warehouse), adds relative clauses (<b>who/which/whose</b>) to combine two sentences about a person or thing, and uses the gerund (-ing form) after certain verbs and prepositions. <b>Example:</b> <i>The warehouse, which stores thousands of parcels, is run by robots that pick and pack orders.</i>",
+  grammar: [
+    mcq("Orders ___ (place) online by customers all over the world.", ["place","are placed","placed","is placed"], 1),
+    mcq("The parcels ___ (pack) by robots in the warehouse.", ["pack","are packed","packed","packing"], 1),
+    mcq("The warehouse worker ___ picks the items is called a “picker”.", ["which","who","whose","where"], 1),
+    mcq("Fast fashion, ___ environmental impact is huge, is now questioned by many consumers.", ["who","which","whose","that"], 2),
+    mcq("She enjoys ___ (swap) clothes with her friends instead of buying new ones.", ["swap","to swap","swapping","swapped"], 2),
+    mcq("The parcels ___ (already/pack) by the time the truck arrives.", ["have already packed","are already packed","have already been packed","already pack"], 2),
+    mcq("The customer complained about ___ (receive) the wrong size.", ["receive","to receive","receiving","received"], 2),
+    tf("Passive of: “The company recycles the packaging.” (write the new subject + verb)", ["the packaging is recycled","the packaging is recycled by the company"]),
+  ],
+  pronunciation: [
+    pr("The warehouse is run mostly by robots.","warehouse","WAIR-hows","WEH-hows"),
+    pr("A robotic arm packs each box automatically.","robotic","roh-BOT-ik"),
+    pr("Watch the conveyor belt carry the boxes.","conveyor","kuhn-VAY-er","kuhn-VAY-uh"),
+    pr("It’s important to buy sustainable clothing.","sustainable","suh-STAY-nuh-buhl"),
+    pr("The courier left the parcel at the door.","courier","KUR-ee-er","KUR-ee-uh"),
+    pr("I need a bigger wardrobe for winter clothes.","wardrobe","WOR-drohb","WAW-drohb"),
+    pr("We found some great bargains at the jumble sale.","jumble sale","JUHM-buhl SAYL"),
+    pr("Fast fashion increases consumption.","consumption","kuhn-SUHMP-shuhn"),
+  ],
+  writing: {prompt:"You decide to post a comment on a blog about fast fashion. Give your opinion on buying new clothes vs. second-hand ones, mention one effect of fast fashion on the environment, and suggest one way to reduce it.", minWords:80, maxWords:110},
+  quiz: [
+    mcq("A “picker” in a warehouse is someone who…", ["delivers parcels to houses","selects items from shelves to fill an order","drives the delivery truck","designs the website"], 1),
+    mcq("Passive of: “Robots pack the boxes.”", ["The boxes pack.","The boxes are packed.","The boxes packed.","The boxes have packed."], 1),
+    mcq("“Sustainable” means…", ["cheap","fast","not harmful to the environment long-term","fashionable"], 2),
+    mcq("The manager, ___ office is upstairs, checks all orders.", ["who","which","whose","where"], 2),
+    mcq("“To swap” clothes means to…", ["throw them away","exchange them with someone else","buy them online","wash them"], 1),
+    mcq("She avoids ___ (buy) fast fashion.", ["buy","to buy","buying","bought"], 2),
+    mcq("A “charity shop” sells…", ["new designer clothes only","second-hand goods to raise money for good causes","electronics only","food"], 1),
+    mcq("“Consumption” in this unit’s context means…", ["the act of using up goods/resources","a type of illness","a type of contract","a delivery method"], 0),
+  ],
+},
+
+unit5: {
+  id:"unit5", order:5, label:"Unit 5", title:"Leisure, sport and entertainment", pages:"p. 64–75", accent:"var(--tab-1)",
+  tasks: [
+    {page:"64", ex:"1a", instr:"Word power: word-fields. Draw a mind map for “types of sport”. Add any other categories you can think of.", hint:""},
+    {page:"65", ex:"1b", instr:"Think of other sports and add them to the list, sorted by play / go / do.", hint:""},
+    {page:"65", ex:"2a–2b", instr:"Word families. Complete the verb → noun table, then use the words to complete the text.", hint:"Use a dictionary if you need to."},
+    {page:"66", ex:"1a–1b", instr:"Preparing to read: class survey. Who plays computer games? Do you think computer gaming is a sport?", hint:""},
+    {page:"66–67", ex:"2", instr:"Reading comprehension: multiple matching. Choose the correct missing part (A–J) for each gap (1–7). Two extra parts are not used.", hint:"Read the sentence before AND after each gap, and look for pronouns or verb tenses that reveal the logical connection."},
+    {page:"67", ex:"3", instr:"Reading for detail. Answer the questions and compare your answers with a partner.", hint:""},
+    {page:"68", ex:"4a–4b", instr:"Working with words: word families. Complete the table, then explain a word family to your partner.", hint:""},
+    {page:"68", ex:"6a", instr:"Listening (Track 10). Listen to two people discussing e-sports and tick the arguments they use.", hint:"Read all ten arguments before you listen, and mark unfamiliar words."},
+    {page:"69", ex:"6b–6c", instr:"Put all the arguments under Pro or Con, then add your own ideas to the list.", hint:""},
+    {page:"69", ex:"8a–8b", instr:"Analysing an article. Find the headline, introduction, main body and conclusion of the text on pp. 66–67, and find two direct questions to the reader.", hint:""},
+    {page:"69", ex:"9", instr:"Writing: article. Write an article of about 200 words about attending an e-sports competition, for a European youth magazine.", hint:""},
+    {page:"70", ex:"1a–1d", instr:"A leisure time questionnaire. Decide which activities are leisure time, then discuss how many hours a week you spend on leisure vs. non-leisure activities.", hint:""},
+    {page:"70", ex:"2a–2b", instr:"Listening: sporting leisure activities. Match the speakers (1–4) to the photos (geocaching, hip-hop dancing, bouldering, parkour).", hint:"Listen for describing details like “a low wall”, “a smartphone and an app”, “comfortable clothes and sneakers”."},
+    {page:"71", ex:"3b", instr:"Match the verbs to their definitions, then listen to the introduction to a hip-hop dancing course (Track 13) and match sentence beginnings to endings.", hint:""},
+    {page:"72", ex:"5", instr:"Grammar in use: verb + to-infinitive or -ing form. Choose the correct verb form to complete the brochure.", hint:"See the Grammar tab — some verbs always take to + infinitive, others always take -ing."},
+    {page:"72–73", ex:"6–7", instr:"Read the text about parkour, complete the notes, and prepare a short presentation about your favourite sporting activity.", hint:""},
+    {page:"74", ex:"2", instr:"Listening comprehension: note form (Track 14). Listen to two customer-service phone calls and answer questions 1–7 using a maximum of four words.", hint:"Read the seven questions carefully first and mark the key words you need to listen for."},
+    {page:"75", ex:"4", instr:"Role-play: complaining. Role-play a phone call in which a customer complains about an item bought online.", hint:""},
+  ],
+  vocab: [
+    {en:"e-sports", de:"E-Sport"},
+    {en:"spectator", de:"Zuschauer:in"},
+    {en:"roster", de:"Teamaufstellung"},
+    {en:"rivalry", de:"Rivalität"},
+    {en:"leisure time", de:"Freizeit"},
+    {en:"geocaching", de:"Geocaching"},
+    {en:"bouldering", de:"Bouldern"},
+    {en:"parkour", de:"Parkour"},
+    {en:"turntable", de:"Plattenspieler"},
+    {en:"free running", de:"Freerunning"},
+    {en:"customer service hotline", de:"Kundendienst-Hotline"},
+    {en:"refund", de:"Rückerstattung"},
+    {en:"replacement", de:"Ersatz"},
+    {en:"faulty", de:"defekt"},
+    {en:"invoice", de:"Rechnung"},
+  ],
+  grammarFocus: "Verb + to-infinitive or -ing form",
+  grammarExplanation: "Some verbs (want, decide, hope …) are followed by <b>to + infinitive</b>, while others (enjoy, keep, avoid …) are followed by the <b>-ing form</b>. There’s no simple rule for which pattern a verb takes — you have to learn each one. <b>Example:</b> <i>I decided to try parkour, and now I really enjoy training in the park.</i>",
+  grammar: [
+    mcq("I decided ___ (try) parkour last year.", ["try","trying","to try","tried"], 2),
+    mcq("She enjoys ___ (train) every morning before school.", ["train","to train","training","trains"], 2),
+    mcq("We want ___ (watch) the e-sports final tonight.", ["watching","watch","to watch","watched"], 2),
+    mcq("He keeps ___ (practise) his free-running moves.", ["practise","to practise","practising","practised"], 2),
+    mcq("They hope ___ (join) a local dance class soon.", ["joining","to join","join","joined"], 1),
+    mcq("I can’t afford ___ (buy) a season ticket this year.", ["buying","buy","to buy","bought"], 2),
+    mcq("She avoids ___ (play) video games late at night.", ["play","to play","played","playing"], 3),
+    tf("Which verb pattern follows “enjoy”? (one word)", ["-ing","gerund","ing-form"]),
+  ],
+  pronunciation: [
+    pr("E-sports events can sell out big arenas.","e-sports","EE-sports"),
+    pr("There’s a lot of rivalry between the two teams.","rivalry","RY-vuhl-ree"),
+    pr("Have you ever tried geocaching?","geocaching","JEE-oh-kash-ing"),
+    pr("Bouldering doesn’t need a harness.","bouldering","BOHL-duh-ring"),
+    pr("Parkour started in France.","parkour","par-KOOR"),
+    pr("A turntable is an old-fashioned record player.","turntable","TURN-tay-buhl","TUHN-tay-buhl"),
+    pr("I’d like a refund, please.","refund","REE-fuhnd"),
+    pr("The battery was faulty.","faulty","FAWL-tee"),
+  ],
+  writing: {prompt:"Imagine you attended an e-sports tournament. Write a short article (for a European youth magazine) describing the atmosphere, saying what made it exciting, giving your opinion on whether e-sports should become an Olympic sport, and asking your readers a direct question.", minWords:90, maxWords:120},
+  quiz: [
+    mcq("“Rivalry” means…", ["friendship","competition between opponents","a type of stadium","a referee"], 1),
+    mcq("Which sentence is correct?", ["I enjoy to play tennis.","I enjoy playing tennis.","I enjoy play tennis.","I enjoy played tennis."], 1),
+    mcq("“Bouldering” is a type of…", ["swimming","climbing without ropes on low rocks/walls","running","dancing"], 1),
+    mcq("A “roster” in e-sports is…", ["a trophy","a list of team players","a type of headset","a stadium"], 1),
+    mcq("“To go geocaching” means to…", ["search for hidden containers using GPS/an app","play video games","go camping","go fishing"], 0),
+    mcq("I want ___ join the team.", ["joining","to join","join","joined"], 1),
+    mcq("“Faulty” means…", ["expensive","not working correctly","brand new","refunded"], 1),
+    mcq("In a complaint call, you might ask for a…", ["refund or replacement","discount code only","new job","competition entry"], 0),
+  ],
+},
+
+unit6: {
+  id:"unit6", order:6, label:"Unit 6", title:"Fit and healthy", pages:"p. 80–89", accent:"var(--tab-2)",
+  tasks: [
+    {page:"80", ex:"—", instr:"Read “Why exercise is wise” and notice the highlighted words and phrases.", hint:""},
+    {page:"81", ex:"1a", instr:"Word power: word-fields. Collect words from the text under headings: verbs, adjectives, nouns (body/mind/dangers/exercise).", hint:""},
+    {page:"81", ex:"1b", instr:"Speaking: use a verb, an adjective and a noun from the table to make your own sentences with a partner.", hint:""},
+    {page:"81", ex:"2a", instr:"Statistics on exercise. Look at the infographic and answer the three questions about people’s reasons for exercising.", hint:""},
+    {page:"82", ex:"1", instr:"Commenting on an advertisement. Look at the photo of the young bodybuilder and discuss the questions with a partner.", hint:""},
+    {page:"82–83", ex:"2", instr:"Reading comprehension: note form. Read the text about “bigorexia” and complete sentences 1–6 using a maximum of four words.", hint:"Check the glossary words (draining board, to soar, puny, to gulp, calf) before you read."},
+    {page:"84", ex:"3", instr:"Reading for detail. Answer the questions about the text in your own words.", hint:""},
+    {page:"84", ex:"4a–4b", instr:"Working with words: antonyms. Find opposite-meaning words in the text, then use them to complete the gym advertisement.", hint:""},
+    {page:"84", ex:"5", instr:"Discussion. Have you ever been to a gym? Discuss in a small group, then report back to the class.", hint:""},
+    {page:"85", ex:"6a", instr:"Grammar: reported speech. Find two examples of reported speech in the text on p. 83 and identify the tenses used.", hint:""},
+    {page:"85", ex:"6b", instr:"Read the speech bubbles, then choose the correct verb forms to complete Alice’s blog post.", hint:"First mark whether the reporting verb (say/said, complain/complains) is present or past — that decides whether you need to backshift the tense."},
+    {page:"85", ex:"7", instr:"Speaking: individual long turn. Give a short talk on the best way of staying fit and healthy.", hint:""},
+    {page:"86", ex:"1", instr:"Preparing to listen. Match the medical vocabulary (examination, injection, X-ray, etc.) to the pictures.", hint:""},
+    {page:"86–87", ex:"2", instr:"Listening comprehension: multiple choice. Listen to the conversation at the doctor’s and choose the correct answer for questions 1–6.", hint:"Read all the answer options carefully first — they often differ only in small details."},
+    {page:"87", ex:"3", instr:"Pair work: role-play a dialogue at the doctor’s, describing a problem and prescribing a remedy.", hint:""},
+    {page:"88", ex:"4", instr:"Reading: pharmacies. Find the English equivalents of the German words and phrases given.", hint:""},
+    {page:"88–89", ex:"5a–5b", instr:"Complete the dialogue at the chemist’s with the missing phrases, then listen and check your answers.", hint:"Decide first whether each gap is spoken by the pharmacist or the customer."},
+    {page:"89", ex:"6", instr:"Writing: blog entry. Write a blog entry telling your readers you won’t be blogging for a few days because you’re unwell.", hint:""},
+  ],
+  vocab: [
+    {en:"to boost", de:"steigern, fördern"},
+    {en:"metabolism", de:"Stoffwechsel"},
+    {en:"self-esteem", de:"Selbstwertgefühl"},
+    {en:"osteoporosis", de:"Osteoporose"},
+    {en:"bigorexia", de:"Muskelsucht"},
+    {en:"to soar", de:"stark ansteigen"},
+    {en:"puny", de:"schwächlich, klein"},
+    {en:"to neglect", de:"vernachlässigen"},
+    {en:"gym membership", de:"Fitnessstudio-Mitgliedschaft"},
+    {en:"X-ray", de:"Röntgenbild"},
+    {en:"ultrasound", de:"Ultraschall"},
+    {en:"prescription", de:"Rezept (Medikament)"},
+    {en:"over-the-counter remedy", de:"frei verkäufliches Mittel"},
+    {en:"GP (general practitioner)", de:"Hausärzt:in"},
+    {en:"A&E (accident and emergency)", de:"Notaufnahme"},
+  ],
+  grammarFocus: "Reported speech",
+  grammarExplanation: "When you report what someone said, the reporting verb’s tense matters: if it’s in the present (says, complains), the tense usually stays the same; if it’s in the past (said, told), the tense normally shifts one step back (backshift). <b>Example:</b> “I was a skinny child,” he says. → <i>He says that he was a skinny child.</i> “I’ll get bigger,” he said. → <i>He said that he would get bigger.</i>",
+  grammar: [
+    mcq("“I was a skinny child,” he says. → He says that he ___ a skinny child.", ["is","was","were","has been"], 1),
+    mcq("“I’ll get bigger,” he said. → He said that he ___ bigger.", ["will get","would get","gets","got"], 1),
+    mcq("“I’ve lost weight,” she told her boss. → She told her boss that she ___ weight.", ["has lost","had lost","lost","loses"], 1),
+    mcq("“This suits me,” they say. → They say that it ___ them.", ["suited","suits","had suited","would suit"], 1),
+    mcq("“You should join a gym,” she said. → She said (that) I ___ join a gym.", ["should","would","must","will"], 0),
+    mcq("“He sees a doctor every year,” his girlfriend complains. → She complains that he ___ a doctor every year.", ["saw","sees","has seen","would see"], 1),
+    tf("Backshift of “is” in reported speech (past reporting verb).", ["was"]),
+    tf("Backshift of “will” in reported speech.", ["would"]),
+  ],
+  pronunciation: [
+    pr("Exercise boosts your metabolism.","metabolism","muh-TAB-uh-liz-uhm"),
+    pr("Regular exercise improves self-esteem.","self-esteem","self-uh-STEEM"),
+    pr("Weak bones can lead to osteoporosis.","osteoporosis","os-tee-oh-puh-ROH-sis"),
+    pr("He felt puny compared to the other boys.","puny","PYOO-nee"),
+    pr("The doctor gave him a prescription.","prescription","prih-SKRIP-shuhn"),
+    pr("She had an ultrasound at the hospital.","ultrasound","UHL-truh-sownd"),
+    pr("Make an appointment with your GP.","GP","JEE-PEE"),
+    pr("My shoulder still aches a little.","aches","AYKS"),
+  ],
+  writing: {prompt:"Write a blog entry for your followers explaining that you won’t be posting for a few days. Describe your (invented) illness, how you feel, and what your symptoms are. Use at least one word from the “Problems” or “Remedies” vocabulary.", minWords:70, maxWords:100},
+  quiz: [
+    mcq("“To boost” means to…", ["decrease","increase or improve","stop","copy"], 1),
+    mcq("“I feel great,” she said. → She said (that) she ___ great.", ["feels","felt","feel","has felt"], 1),
+    mcq("“Osteoporosis” is a condition affecting…", ["the eyes","the bones","the skin","the lungs"], 1),
+    mcq("A GP is…", ["a hospital","a general practitioner (family doctor)","a type of medicine","a pharmacy"], 1),
+    mcq("“Puny” means…", ["very strong","weak and small","very tall","fast"], 1),
+    mcq("“Over-the-counter remedies” can be bought…", ["only with a prescription","without a prescription, directly at the chemist’s","only in hospital","online only"], 1),
+    mcq("“You should rest,” the doctor said. → The doctor said (that) I ___ rest.", ["should","will","am to","must to"], 0),
+    mcq("“A&E” stands for…", ["Arts & Entertainment","Accident & Emergency","Athletics & Exercise","Allergy & Eczema"], 1),
+  ],
+},
+
+unit7: {
+  id:"unit7", order:7, label:"Unit 7", title:"Nutrition", pages:"p. 90–101", accent:"var(--tab-3)",
+  tasks: [
+    {page:"90", ex:"—", instr:"Read “Food allergies and food intolerance” and notice the highlighted words and phrases.", hint:""},
+    {page:"90", ex:"1", instr:"Word power: mind map. Complete the mind map using highlighted words and phrases from the text.", hint:"Decide first whether a word belongs to “intolerance” or “allergies”, then to symptoms or problem foods."},
+    {page:"91", ex:"2a–2b", instr:"Word families. Complete the tables with the missing words.", hint:"Use a dictionary if you need to."},
+    {page:"91", ex:"3a–3b", instr:"Compound nouns. Make compound nouns, then use them to explain the difference between allergies and intolerance to your partner.", hint:""},
+    {page:"92", ex:"1a–1b", instr:"What is gluten-free? Discuss which of the photographed foods contain gluten, then discuss your own experience of gluten-free diets.", hint:""},
+    {page:"92–93", ex:"2", instr:"Reading comprehension: multiple choice. Read Dr Bob’s blog and the comments, then choose the correct answer for questions 1–4.", hint:"Each question refers to a different section — the blog or one of the three comments."},
+    {page:"94", ex:"3a–3b", instr:"Reading and taking notes. Decide who is for/against going gluten-free, then note down arguments for and against in a table.", hint:""},
+    {page:"94", ex:"4", instr:"Working with words: collocations. Highlight all the collocations with the word symptom(s) in the first six paragraphs.", hint:""},
+    {page:"94", ex:"5", instr:"Working with words you don’t know. Work out the meaning of the words in the word cloud using context, similarity to German, or a dictionary.", hint:""},
+    {page:"94–95", ex:"6a", instr:"Grammar in use: conditional III. Complete the sentences with the correct forms of the verbs.", hint:"Mark “would have” in the main clause first, then form “had + past participle” in the if-clause."},
+    {page:"95", ex:"6b", instr:"Speaking: with a partner, build your own conditional III sentences about food intolerance, one partner starting and the other completing.", hint:""},
+    {page:"95", ex:"7", instr:"Pair work: role-play a dialogue at the doctor’s about symptoms of a possible food intolerance.", hint:""},
+    {page:"96", ex:"1a–1b", instr:"Class survey: food allergies. Find out how many people in the class have a food allergy, then discuss the results.", hint:""},
+    {page:"96", ex:"2", instr:"Match the words (anaemia, barley, bowel cancer, dough, fatigue, osteoporosis, rye) to their German equivalents.", hint:""},
+    {page:"96", ex:"3", instr:"Listening comprehension: note form (Track 18). Listen to Cathy talking about coeliac disease and complete sentences 1–7.", hint:""},
+    {page:"97", ex:"4", instr:"Working with words: phrases. Complete the sentences with the correct missing prepositions.", hint:"Some prepositions are used twice — check you’ve used all the words in the list once you’re done."},
+    {page:"98", ex:"5a–5c", instr:"Grammar: mixed conditionals. Complete the if-clauses (types 0–3), then complete eight sentences with the correct verb forms.", hint:"Find the signal word in the main clause (will/would/would have/present) to identify which type you need."},
+    {page:"98", ex:"6", instr:"Mediating: explain in English (using the right conditional type) what happens if you eat a food you’re allergic to.", hint:""},
+    {page:"99", ex:"7", instr:"Writing: leaflet. Write an information leaflet for a health-food shop about food allergies and intolerance, about 200 words.", hint:""},
+  ],
+  vocab: [
+    {en:"food allergy", de:"Lebensmittelallergie"},
+    {en:"food intolerance", de:"Lebensmittelunverträglichkeit"},
+    {en:"gluten", de:"Gluten, Klebereiweiß"},
+    {en:"digestive system", de:"Verdauungssystem"},
+    {en:"coeliac disease", de:"Zöliakie"},
+    {en:"allergen", de:"Allergen"},
+    {en:"dietician", de:"Ernährungsberater:in"},
+    {en:"fatigue", de:"Erschöpfung"},
+    {en:"dough", de:"Teig"},
+    {en:"rye", de:"Roggen"},
+    {en:"barley", de:"Gerste"},
+    {en:"immune system", de:"Immunsystem"},
+    {en:"symptom", de:"Symptom"},
+    {en:"diagnosis", de:"Diagnose"},
+    {en:"bloating", de:"Blähbauch"},
+  ],
+  grammarFocus: "Conditional III & mixed conditionals",
+  grammarExplanation: "Conditional III (<b>if + past perfect, … would have + past participle</b>) talks about an unreal situation in the past — something that did NOT happen, and its imagined result. Mixed conditionals combine different types (0, 1, 2, 3) depending on how real, likely, unlikely or impossible the situation is. <b>Example:</b> <i>If I hadn’t eaten those peanuts, I wouldn’t have got stomach pains.</i>",
+  grammar: [
+    mcq("If I ___ (not/eat) those peanuts, I wouldn’t have got stomach pains.", ["don’t eat","hadn’t eaten","didn’t eat","haven’t eaten"], 1),
+    mcq("She would have gone to hospital if he ___ (not/warn) her in time.", ["doesn’t warn","didn’t warn","hadn’t warned","wouldn’t warn"], 2),
+    mcq("If people always give up at the first problem, nothing ___ (change).", ["will change","would change","changed","would have changed"], 0),
+    mcq("If she ___ (be) allergic to nuts, she would avoid them completely.", ["is","was","were","had been"], 2),
+    mcq("If you eat gluten and you have coeliac disease, you always ___ (feel) unwell.", ["feel","felt","will feel","would feel"], 0),
+    mcq("If I hadn’t read that article, I ___ (not/know) about food intolerance.", ["don’t know","wouldn’t know","wouldn’t have known","didn’t know"], 2),
+    tf("Which conditional type describes a general truth (type 0)?", ["if + present simple, present simple","zero conditional"]),
+    tf("Which conditional type describes an unreal past situation (type 3)?", ["if + past perfect, would have + past participle","third conditional"]),
+  ],
+  pronunciation: [
+    pr("Gluten is found in wheat and other cereals.","gluten","GLOO-tuhn"),
+    pr("She was diagnosed with coeliac disease.","coeliac","SEE-lee-ak"),
+    pr("Check the label for possible allergens.","allergens","AL-er-juhnz","AL-uh-juhnz"),
+    pr("A dietician can give you personalised advice.","dietician","dy-uh-TISH-uhn"),
+    pr("One symptom is constant fatigue.","fatigue","fuh-TEEG"),
+    pr("Look after your digestive system.","digestive","dy-JES-tiv"),
+    pr("What are your symptoms?","symptom","SIMP-tuhm"),
+    pr("The diagnosis took several weeks.","diagnosis","dy-uhg-NOH-sis"),
+  ],
+  writing: {prompt:"You work in a health-food shop. Write an information leaflet for customers with questions about food allergies and intolerance: explain the difference between them, describe how someone can find out if they have a food intolerance, and mention two products your shop offers.", minWords:90, maxWords:120},
+  quiz: [
+    mcq("“Gluten” is found mainly in…", ["dairy products","wheat and other cereals","fruit","fish"], 1),
+    mcq("If I hadn’t eaten peanuts, I ___ stomach pains.", ["don’t get","wouldn’t get","wouldn’t have got","won’t get"], 2),
+    mcq("“Coeliac disease” means a person…", ["is allergic to milk","cannot digest gluten properly","cannot eat sugar","is allergic to nuts"], 1),
+    mcq("A “dietician” is someone who…", ["sells medicine","gives professional advice on food and nutrition","delivers food","grows crops"], 1),
+    mcq("“Fatigue” means…", ["extreme tiredness","a stomach ache","a rash","a headache"], 0),
+    mcq("If she eats gluten (a general fact), she always ___ ill.", ["feels","felt","will feel","would feel"], 0),
+    mcq("“Allergen” means…", ["a doctor","a substance that can cause an allergic reaction","a type of medicine","a healthy food"], 1),
+    mcq("The best way to check for a food intolerance is to…", ["stop eating completely","keep a food diary noting foods and symptoms","take painkillers","see a dentist"], 1),
+  ],
+},
+
+unit8: {
+  id:"unit8", order:8, label:"Unit 8", title:"Our training firm", pages:"p. 106–115", accent:"var(--tab-4)",
+  tasks: [
+    {page:"106", ex:"—", instr:"Read “What is a training firm?” and notice the highlighted words and phrases.", hint:""},
+    {page:"106–107", ex:"1a–1b", instr:"Word power: definitions. Find nouns and verbs in the text which match the definitions given.", hint:"Sort the highlighted words roughly by word type (noun/verb) first."},
+    {page:"107", ex:"2", instr:"Working with words. Complete the dialogue between Alice and her mentor with words from exercise 1.", hint:""},
+    {page:"107", ex:"3", instr:"Skills audit and development plan. With a partner, list and score your ‘hard’ and ‘soft’ business skills, and discuss how a training firm could help.", hint:""},
+    {page:"108", ex:"1a–1b", instr:"Preparing to read: work roles. Look at the organization chart and note down what each job might involve, then discuss with a partner.", hint:""},
+    {page:"108–109", ex:"2", instr:"Reading for gist. Read “Our team” and write each person’s name below their job title in the organization chart.", hint:"On your first read, look only for names and positions — details come later."},
+    {page:"109–110", ex:"3", instr:"Reading comprehension: multiple choice. Read the text again and choose the correct answer for questions 1–6.", hint:""},
+    {page:"110", ex:"4a–4b", instr:"Working with words. Complete the sentences with personal qualities, then match verbs to the correct job-task nouns.", hint:""},
+    {page:"111", ex:"4c", instr:"Use adjectives and job tasks to write role descriptions for four roles, then present them to a partner.", hint:""},
+    {page:"111", ex:"5a–5b", instr:"Grammar: present participle constructions. Find examples in the text and decide their function, then rewrite six sentences using present participles.", hint:""},
+    {page:"111", ex:"6", instr:"Writing: flyer. Write a flyer for your training firm: a vision statement, a product/service description, and a short introduction of team members.", hint:""},
+    {page:"112", ex:"1", instr:"Preparing to listen: discuss how you should answer a business phone call and what information you should note when taking a message.", hint:""},
+    {page:"112", ex:"2", instr:"Listening comprehension: note form (Track 23). Answer questions 1–7 using a maximum of four words.", hint:"Read the seven questions and mark the expected type of answer (person, place, reason, action) before listening."},
+    {page:"113", ex:"3a–3b", instr:"Listening for detail: taking a message. Fill out the telephone message forms with all the relevant information.", hint:""},
+    {page:"114", ex:"4", instr:"Working with words: language for telephoning. Complete the dialogue with words from the box.", hint:""},
+    {page:"114", ex:"5", instr:"Role-play: a business phone call. Take a call, note a message, and swap roles with your partner.", hint:""},
+    {page:"115", ex:"6a–6b", instr:"Grammar in use: gerunds. Complete the job advert with the correct -ing forms, then find and underline the structures that are followed by a gerund.", hint:"Look closely at the structure right before each gap — is it ‘enjoy’, ‘in charge of’, or ‘good at’?"},
+    {page:"115", ex:"7", instr:"Place mat: in a group, agree on best-practice rules for effective business phone calls (before / during / after) and present them to the class.", hint:""},
+  ],
+  vocab: [
+    {en:"training firm", de:"Übungsfirma"},
+    {en:"entrepreneur", de:"Unternehmer:in"},
+    {en:"inventory", de:"Bestand, Inventar"},
+    {en:"invoice", de:"Rechnung"},
+    {en:"trade fair", de:"Handelsmesse"},
+    {en:"raw material", de:"Rohstoff"},
+    {en:"to recruit", de:"rekrutieren, anwerben"},
+    {en:"to pitch (an idea)", de:"eine Idee präsentieren"},
+    {en:"to network", de:"Kontakte pflegen/aufbauen"},
+    {en:"board of directors", de:"Vorstand"},
+    {en:"sales forecast", de:"Verkaufsprognose"},
+    {en:"to leave a message", de:"eine Nachricht hinterlassen"},
+    {en:"extension (phone)", de:"Durchwahl"},
+    {en:"voicemail", de:"Anrufbeantworter/Sprachnachricht"},
+    {en:"decisive", de:"entscheidungsfreudig"},
+  ],
+  grammarFocus: "Present participle constructions & gerunds",
+  grammarExplanation: "A present participle (<b>-ing form</b>) can qualify a noun, replace a relative clause, or link two actions happening together — all without repeating the subject. The gerund is used after certain fixed structures such as <b>enjoy + -ing</b>, <b>be in charge of + -ing</b> and <b>be good at + -ing</b>. <b>Example:</b> <i>Filing documents and answering the phone, the office manager keeps the firm running smoothly.</i>",
+  grammar: [
+    mcq("___ documents and ordering supplies, the office manager keeps things running.", ["Filing","Filed","To file","Files"], 0),
+    mcq("The manager ___ in the production department is very organised.", ["work","working","worked","works"], 1),
+    mcq("The CEO enjoys ___ (communicate) with clients.", ["communicate","to communicate","communicating","communicated"], 2),
+    mcq("She is in charge of ___ (conduct) market research.", ["conduct","to conduct","conducting","conducted"], 2),
+    mcq("He is good at ___ (organise) events.", ["organise","to organise","organising","organised"], 2),
+    mcq("How about ___ (join) our training firm?", ["join","joining","to join","joined"], 1),
+    tf("Which preposition-based phrase means “responsible for”? (2 words + “of”)", ["in charge of"]),
+    tf("A present participle qualifying a noun replaces which structure?", ["a relative clause","relative clause"]),
+  ],
+  pronunciation: [
+    pr("She’s a young entrepreneur.","entrepreneur","on-truh-pruh-NUR","on-truh-pruh-NUH"),
+    pr("Check the inventory before ordering more stock.","inventory","IN-vuhn-tor-ee","IN-vuhn-tree"),
+    pr("Please send us the invoice.","invoice","IN-voys"),
+    pr("Wood is a raw material for paper.","raw material","RAW muh-TEER-ee-uhl"),
+    pr("We need to recruit new staff.","recruit","rih-KROOT"),
+    pr("It’s important to network with other firms.","network","NET-wurk","NET-wuhk"),
+    pr("A good manager is decisive.","decisive","dih-SY-siv"),
+    pr("Please leave a voicemail after the tone.","voicemail","VOYS-mayl"),
+  ],
+  writing: {prompt:"Write the opening of a flyer for your own training firm: a short vision statement, then briefly describe your products or services.", minWords:80, maxWords:110},
+  quiz: [
+    mcq("A “training firm” is…", ["a real company that sells abroad","a simulated company where students practise business skills","a bank","a factory"], 1),
+    mcq("“To pitch an idea” means to…", ["reject an idea","present an idea persuasively to someone","write an idea down","forget an idea"], 1),
+    mcq("She is in charge of ___ market research.", ["conduct","to conduct","conducting","conducted"], 2),
+    mcq("An “invoice” is…", ["a bill requesting payment for goods/services","a job advertisement","a contract","a receipt of payment already made"], 0),
+    mcq("“To network” means to…", ["work alone","build professional contacts and relationships","use the internet only","manage a database"], 1),
+    mcq("How about ___ our team?", ["join","joining","to join","joined"], 1),
+    mcq("A “sales forecast” predicts…", ["past sales only","how much will probably be sold in future","staff salaries","office equipment needed"], 1),
+    mcq("“Decisive” describes someone who…", ["struggles to make decisions","makes decisions confidently and quickly","never agrees with others","avoids responsibility"], 1),
+  ],
+},
+
+unit9: {
+  id:"unit9", order:9, label:"Unit 9", title:"Careers in commerce", pages:"p. 116–127", accent:"var(--tab-1)",
+  tasks: [
+    {page:"116", ex:"—", instr:"Read “Commercial careers – where to start?” and notice the highlighted words and phrases.", hint:""},
+    {page:"117", ex:"1a–1b", instr:"Word fields: careers. Complete the table (career paths / jobs / tasks / personal qualities and skills), then add your own ideas.", hint:"Go through the text paragraph by paragraph and fill in one row per paragraph."},
+    {page:"117", ex:"2", instr:"Extending career vocabulary. With a partner, agree on three career paths that interest you and list jobs and required skills for each.", hint:""},
+    {page:"118", ex:"1", instr:"Preparing to read. Discuss what the event organizers in the photos are doing.", hint:""},
+    {page:"118–119", ex:"2", instr:"Pair-work reading: information gap. Read your assigned case study (Sarah Fisher or Jack Yates) and answer your partner’s questions to complete the grid.", hint:"Mark your answers to the nine grid categories in the text with pencil as you read."},
+    {page:"119", ex:"3a", instr:"Working with words: prepositions. Complete the sentences with the correct prepositions.", hint:""},
+    {page:"120", ex:"3b", instr:"Working with words: antonyms. Complete the sentences with a word of opposite meaning to the underlined word.", hint:""},
+    {page:"120", ex:"4a–4b", instr:"Grammar in use: past participle constructions. Decide the function of the examples in the text, then complete six sentences.", hint:""},
+    {page:"121", ex:"5", instr:"Reading a job profile. Compare the official job profile with the two case studies: which tasks are mentioned, which are missing, which belong to other team members?", hint:""},
+    {page:"121", ex:"6", instr:"Project: forming a team. In a group, divide the tasks from the job profile, give each member a job title, and introduce your team to the class.", hint:""},
+    {page:"122", ex:"1", instr:"Word power: the essence of customer service. Complete the sentences with the most suitable verb from the list.", hint:""},
+    {page:"122", ex:"2", instr:"Listening: a customer sales talk (Track 26). Complete the notes about the customer’s holiday requirements.", hint:"Read all six categories in the table before you listen."},
+    {page:"123", ex:"3a–3b", instr:"Word power: useful phrases for sales assistants. Complete and categorise the phrases (offering help, asking for information, giving advice, making suggestions, promising further action).", hint:""},
+    {page:"124", ex:"4a–4b", instr:"Word power: using polite phrases. Make the impolite replies of the travel agent more polite using phrases from exercise 3.", hint:""},
+    {page:"124", ex:"5", instr:"Discussion: getting customer service right. Discuss how a customer might feel, and what an operator should/shouldn’t do.", hint:""},
+    {page:"125", ex:"6", instr:"Speaking: role-play a customer service phone call using the decision tree and one of the three scenario files.", hint:""},
+    {page:"126", ex:"1", instr:"Reading: a business letter. Put the parts of the business letter in the correct order.", hint:"Identify the clearly recognisable parts first — letterhead, address, date, greeting, closing — before ordering the rest."},
+    {page:"127", ex:"2", instr:"Working with words: expressions for formal letter writing. Complete the letter with suitable abbreviations, words and expressions.", hint:""},
+    {page:"127", ex:"3", instr:"Writing: a business letter. Reply to Mr O’Connor’s letter: confirm receipt of the catalogues, request samples, and ask about discounts and payment terms.", hint:""},
+  ],
+  vocab: [
+    {en:"bookkeeper", de:"Buchhalter:in"},
+    {en:"branch manager", de:"Filialleiter:in"},
+    {en:"sales executive", de:"Vertriebsmitarbeiter:in"},
+    {en:"marketing executive", de:"Marketingmitarbeiter:in"},
+    {en:"network support engineer", de:"IT-Netzwerktechniker:in"},
+    {en:"event organizer", de:"Eventmanager:in"},
+    {en:"to negotiate terms", de:"Konditionen verhandeln"},
+    {en:"to close a sale", de:"einen Verkauf abschließen"},
+    {en:"customer service operator", de:"Kundendienstmitarbeiter:in"},
+    {en:"refund", de:"Rückerstattung"},
+    {en:"credit note", de:"Gutschrift"},
+    {en:"decision tree", de:"Entscheidungsbaum"},
+    {en:"Our ref.", de:"unser Zeichen"},
+    {en:"Attn. (attention)", de:"zu Handen von"},
+    {en:"Yours sincerely", de:"mit freundlichen Grüßen"},
+  ],
+  grammarFocus: "Past participle constructions",
+  grammarExplanation: "A past participle construction (<b>-ed/-en form</b>) can qualify a noun, replace a passive relative clause, or replace two separate sentences — it always describes something that has been done TO the noun. <b>Example:</b> <i>The software upgraded last month turned out to be faulty.</i> (= The software <i>that was upgraded</i> last month …)",
+  grammar: [
+    mcq("The software ___ (upgrade) last month turned out to be faulty.", ["upgrading","upgraded","upgrades","to upgrade"], 1),
+    mcq("The report ___ (compile) by a trainee contained errors.", ["compiling","compiled","compiles","to compile"], 1),
+    mcq("Here is a new quotation ___ (provide) by our sales manager.", ["providing","provided","provides","to provide"], 1),
+    mcq("The goods ___ (sell) last week had to be returned.", ["selling","sold","sells","to sell"], 1),
+    mcq("A show ___ (open) by a celebrity chef is off to a good start.", ["opening","opened","opens","to open"], 1),
+    mcq("Which function does a past participle construction usually NOT have?", ["qualifying a noun","replacing a relative clause","replacing two separate sentences","forming a question"], 3),
+    tf("Past participle construction qualifying a noun. Example: “the goods ___ last week” (write the missing word)", ["sold"]),
+    tf("A past participle construction always implies which voice?", ["passive"]),
+  ],
+  pronunciation: [
+    pr("A bookkeeper keeps financial records.","bookkeeper","BOOK-kee-per","BOOK-kee-puh"),
+    pr("They had to negotiate the price.","negotiate","nih-GOH-shee-ayt"),
+    pr("Please send us a quotation.","quotation","kwoh-TAY-shuhn"),
+    pr("She’s a sales executive.","executive","ig-ZEK-yuh-tiv"),
+    pr("Follow the decision tree step by step.","decision","dih-SIZH-uhn"),
+    pr("Yours sincerely, Jane Smith.","sincerely","sin-SEER-lee","sin-SEE-uh-lee"),
+    pr("The order number is on the invoice.","order","OR-der","AW-duh"),
+    pr("Our ref. and your ref. go at the top.","ref","REF"),
+  ],
+  writing: {prompt:"Write the opening of a formal business letter replying to a supplier: thank them for their catalogue, and request samples of two products.", minWords:70, maxWords:100},
+  quiz: [
+    mcq("A “bookkeeper” is responsible for…", ["designing adverts","keeping financial records","managing staff","selling products directly"], 1),
+    mcq("The report ___ by a trainee contained errors.", ["compiling","compiled","compiles","compile"], 1),
+    mcq("“To negotiate terms” means to…", ["refuse an offer immediately","discuss and agree on conditions of a deal","cancel a contract","ignore an offer"], 1),
+    mcq("A formal letter usually ends with…", ["See you soon","Yours sincerely","Bye for now","Take care"], 1),
+    mcq("“Attn.” in a business letter means…", ["Attention (for the attention of)","Attachment","Attitude","Attendance"], 0),
+    mcq("The goods ___ last week had to be returned.", ["selling","sold","sell","sells"], 1),
+    mcq("A “branch manager” typically…", ["cleans the office","manages a local branch of a company","delivers post","designs logos"], 1),
+    mcq("“Our ref.” is used to…", ["greet the reader","refer to an internal reference number for the letter","end the letter","request a refund"], 1),
+  ],
+},
+
+unit10: {
+  id:"unit10", order:10, label:"Unit 10", title:"My life online", pages:"p. 130–143", accent:"var(--tab-2)",
+  tasks: [
+    {page:"130", ex:"1a–1c", instr:"Working with pictures. Describe the means of communication shown, then say how often you use each one and when.", hint:""},
+    {page:"131", ex:"2", instr:"Think – pair – share: quotes about communication. Choose a quotation you agree and disagree with, discuss with a partner, then report to the class.", hint:""},
+    {page:"131", ex:"3", instr:"Over to you. Comment on the message of the cartoon in less than 50 words.", hint:""},
+    {page:"132", ex:"—", instr:"Read “Keeping in touch online” and notice the highlighted words and phrases.", hint:""},
+    {page:"133", ex:"1a", instr:"Word power: Venn diagram. Complete the diagram (voice/text/video/social media) with words and phrases from the text.", hint:""},
+    {page:"133", ex:"1b", instr:"Speaking: use the Venn diagram to evaluate the pros and cons of different communication media.", hint:""},
+    {page:"133", ex:"2a", instr:"Class survey: comment on the statistics about US teenagers and screens, and compare with your own situation.", hint:""},
+    {page:"134", ex:"1", instr:"Reading comprehension: true/false with justification. Decide if statements 1–8 about the Instagram article are true or false and quote the supporting sentence.", hint:"Read the whole text once first to understand its structure before checking each statement."},
+    {page:"135", ex:"2", instr:"Reading for detail. Point out the negative and positive effects mentioned, and contrast the two experts’ views.", hint:""},
+    {page:"136", ex:"3", instr:"Discussion: social media use. Discuss your own platforms, whether the article’s criticisms are justified, and report your group’s main points to the class.", hint:""},
+    {page:"136", ex:"4a", instr:"Grammar in use: the passive. Find examples of the passive in the text on p. 135 and identify the tense used.", hint:""},
+    {page:"136–137", ex:"4b", instr:"Complete the text about digitally altered images with the correct passive forms.", hint:""},
+    {page:"137", ex:"5a–5b", instr:"Working with words: word families. Complete the table, then describe and contrast the pair of images using words from it.", hint:""},
+    {page:"137", ex:"6", instr:"Writing: blog post. Write a blog post (about 150 words) about the article and your own experience with social media.", hint:""},
+    {page:"138", ex:"1", instr:"Reading for gist. Read the article about Chris Rock’s “Total Blackout Tour” and choose the summary that best matches the text.", hint:"On your first read, focus only on: does Chris Rock ban phones completely, or does he let fans keep them sealed away?"},
+    {page:"139", ex:"2", instr:"Working with words: media and entertainment. Use the switchboard to make as many collocations as you can.", hint:""},
+    {page:"139", ex:"3", instr:"Listening comprehension: multiple matching (Track 28). Match the sentence beginnings (1–8) to endings (A–K). Two endings are not used.", hint:""},
+    {page:"140", ex:"4", instr:"Mind map: smartphones in concerts. Complete the mind map (benefits/problems/your recommendations) with ideas from the unit and your own.", hint:""},
+    {page:"140", ex:"5", instr:"Speaking: interaction. With a partner, suggest and discuss ideas for an unforgettable concert experience, then agree on the best one.", hint:""},
+    {page:"142", ex:"1", instr:"Reading: improving your business textiquette. Match the tips to the headings, and write your own headings for the two missing ones.", hint:""},
+    {page:"143", ex:"2", instr:"Identifying poor texting practice. Find a breach of textiquette in each exchange and rewrite it more appropriately.", hint:""},
+    {page:"143", ex:"3", instr:"Writing: text message. Write two short, professional business text messages (max. 30 words each) for the situations given.", hint:""},
+  ],
+  vocab: [
+    {en:"to keep in touch", de:"in Kontakt bleiben"},
+    {en:"voice call", de:"Sprachanruf"},
+    {en:"instant messaging", de:"Sofortnachrichtendienst"},
+    {en:"FOMO (fear of missing out)", de:"Angst, etwas zu verpassen"},
+    {en:"digitally altered image", de:"digital verändertes Bild"},
+    {en:"photo filter", de:"Fotofilter"},
+    {en:"to ban", de:"verbieten"},
+    {en:"to livestream", de:"live übertragen"},
+    {en:"textiquette", de:"SMS-/Chat-Etikette"},
+    {en:"to proofread", de:"Korrektur lesen"},
+    {en:"acronym", de:"Akronym"},
+    {en:"screen time", de:"Bildschirmzeit"},
+    {en:"to post", de:"posten"},
+    {en:"to upload", de:"hochladen"},
+    {en:"breach (of etiquette)", de:"Verstoß (gegen die Etikette)"},
+  ],
+  grammarFocus: "The passive (extended)",
+  grammarExplanation: "This unit extends the passive to more tenses — including the present perfect passive — for describing digitally altered images and online content, where WHO did the editing is often unknown or unimportant. <b>Example:</b> <i>The introduction of a warning label has been recommended by the Royal Society.</i>",
+  grammar: [
+    mcq("Young people ___ (survey) about their social media use.", ["survey","are surveyed","were surveyed","surveying"], 2),
+    mcq("The introduction of a warning label has ___ (recommend) by the Royal Society.", ["recommended","been recommended","recommend","being recommended"], 1),
+    mcq("These images ___ (alter) digitally before they’re posted.", ["have altered","alter","have been altered","altering"], 2),
+    mcq("A filter ___ (apply) to smooth the skin in the photo.", ["applies","is applied","applying","applied"], 1),
+    mcq("Imperfections ___ (remove) using editing software.", ["remove","removes","are removed","removing"], 2),
+    mcq("Which tense is used in: “has been recommended”?", ["Present Simple Passive","Present Perfect Passive","Past Simple Passive","Future Passive"], 1),
+    tf("Passive of: “The magazine edited the photo.” (write subject + verb)", ["the photo was edited","the photo was edited by the magazine"]),
+    tf("The passive is formed with “to be” + which verb form?", ["past participle"]),
+  ],
+  pronunciation: [
+    pr("She suffers from FOMO — fear of missing out.","FOMO","FOH-moh"),
+    pr("This photo has a filter applied.","filter","FIL-ter","FIL-tuh"),
+    pr("Good textiquette means texting politely.","textiquette","TEKS-tih-ket"),
+    pr("Not everyone knows this acronym.","acronym","AK-ruh-nim"),
+    pr("Always proofread your messages.","proofread","PROOF-reed"),
+    pr("The concert was livestreamed online.","livestream","LYV-streem"),
+    pr("That’s a clear breach of textiquette.","breach","BREECH"),
+    pr("Please upload the photos tonight.","upload","UP-lohd"),
+  ],
+  writing: {prompt:"Write a blog post (about 100 words) about an article on social media and mental health: say what the article was about, summarise its main finding, and compare it with your own experience.", minWords:90, maxWords:120},
+  quiz: [
+    mcq("“FOMO” stands for…", ["Fear Of Missing Out","Feeling Of Missing Online","Friends Online Meeting Online","Fun Online Media Online"], 0),
+    mcq("These photos ___ digitally before posting.", ["alter","altered","are altered","altering"], 2),
+    mcq("“Textiquette” refers to…", ["a type of emoji","polite rules for texting, especially in business","a phone brand","a social media platform"], 1),
+    mcq("The warning label has ___ recommended by experts.", ["been","be","being","was"], 0),
+    mcq("“To proofread” a message means to…", ["send it immediately","check it carefully for mistakes before sending","delete it","forward it to someone else"], 1),
+    mcq("An “acronym” is…", ["a long formal word","a word formed from the initial letters of other words (e.g. FOMO)","a grammar rule","a type of punctuation"], 1),
+    mcq("“To livestream” an event means to…", ["record it for later","broadcast it live over the internet","print photos of it","cancel it"], 1),
+    mcq("Typing a whole message in capital letters is generally seen as…", ["polite","the same as shouting/impolite","required in business texts","a type of acronym"], 1),
+  ],
+},
+
+};
+const UNIT_ORDER = ["unit1","unit2","unit3","unit4","unit5","unit6","unit7","unit8","unit9","unit10"];
+
+/* ============================================================
+   FIREBASE CONFIG
+   ------------------------------------------------------------
+   Paste the config block from your Firebase project here
+   (Project settings → your web app → SDK setup and configuration).
+   These values are meant to be public in client-side code — the
+   real access control lives in your Firestore security rules,
+   not in hiding this object.
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyDzJ3eNsWOASNxmvj2tzymObQMcOkj20Tw",
+  authDomain: "hak-enws-2.firebaseapp.com",
+  projectId: "hak-enws-2",
+  storageBucket: "hak-enws-2.firebasestorage.app",
+  messagingSenderId: "262693976386",
+  appId: "1:262693976386:web:cb81c6c8978f8dd78cb0db",
+  measurementId: "G-VGMGBYLC4T",
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let claudeDb = null;
+let capabilitiesReady = Promise.resolve();
+let studentName = null;      // string or null
+let currentUnit = "unit1";
+let currentModule = "tasks";
+let isTeacher = false;
+let studentCache = {};       // name -> doc data (local mirror)
+let teacherWatchUnsub = null;
+
+try { studentName = localStorage.getItem("hakel_name") || null; } catch(e){}
+
+function downloadFile(filename, text){
+  try{
+    const blob = new Blob([text], {type:"text/csv;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    return true;
+  }catch(e){ return false; }
+}
+
+function slug(name){
+  return String(name).trim().toLowerCase()
+    .replace(/[äáàâ]/g,"a").replace(/[ëéèê]/g,"e").replace(/[ïíìî]/g,"i")
+    .replace(/[öóòô]/g,"o").replace(/[üúùû]/g,"u").replace(/ß/g,"ss").replace(/ñ/g,"n")
+    .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60) || "student";
+}
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function el(html){ const t=document.createElement("template"); t.innerHTML=html.trim(); return t.content.firstElementChild; }
+function qs(sel,root){ return (root||document).querySelector(sel); }
+function qsa(sel,root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function wordCount(s){ return (String(s).trim().match(/\S+/g)||[]).length; }
+
+/* ============================================================
+   DB HELPERS — always read-modify-write full doc (safe merge)
+   ============================================================ */
+function blankStudent(name){
+  const per = ()=>({ tasksDone:[], vocabScore:null, grammarScore:null, quizScore:null,
+                      pronunciation:{done:[]}, writing:null,
+                      games:{matchBestMs:null, clockBest:null, scrambleBestMs:null, sprintBest:null} });
+  const doc = { name, createdAt: Date.now(), lastActive: Date.now() };
+  UNIT_ORDER.forEach(u=>{ doc[u]=per(); });
+  return doc;
+}
+async function loadStudent(name){
+  if(!claudeDb) return null;
+  const id = slug(name);
+  try{
+    const snap = await claudeDb.doc("students/"+id).get();
+    let data = snap && snap.exists ? snap.data() : null;
+    if(!data){ data = blankStudent(name); await claudeDb.doc("students/"+id).set(data); }
+    UNIT_ORDER.forEach(u=>{ if(!data[u]) data[u]=blankStudent(name)[u]; });
+    studentCache[id]=data;
+    return data;
+  }catch(e){ console.warn("loadStudent failed", e); return blankStudent(name); }
+}
+async function updateStudent(name, mutator){
+  if(!claudeDb) return;
+  const id = slug(name);
+  try{
+    const snap = await claudeDb.doc("students/"+id).get();
+    let data = snap && snap.exists ? snap.data() : blankStudent(name);
+    UNIT_ORDER.forEach(u=>{ if(!data[u]) data[u]=blankStudent(name)[u]; });
+    data.lastActive = Date.now();
+    mutator(data);
+    await claudeDb.doc("students/"+id).set(data);
+    studentCache[id]=data;
+  }catch(e){ console.warn("updateStudent failed", e); }
+}
+
+function hasAnyProgress(data){
+  if(!data) return false;
+  return UNIT_ORDER.some(u=>{
+    const d = data[u]; if(!d) return false;
+    return (d.tasksDone && d.tasksDone.length>0) || d.vocabScore || d.grammarScore || d.quizScore || d.writing ||
+      (d.pronunciation && d.pronunciation.done && d.pronunciation.done.length>0) ||
+      (d.games && (d.games.matchBestMs!=null || d.games.clockBest!=null || d.games.scrambleBestMs!=null || d.games.sprintBest!=null));
+  });
+}
+
+/* Asks "is this really you?" when a login name already has saved progress —
+   the app has no passwords, so this is the only guard against two students
+   accidentally sharing one name and merging their progress. */
+function confirmNameModal(name){
+  return new Promise(resolve=>{
+    const backdrop = el(`<div class="modal-backdrop"></div>`);
+    document.body.appendChild(backdrop);
+    backdrop.appendChild(el(`<div class="modal">
+      <h2>Is this you?</h2>
+      <p>There’s already saved progress under the name “${esc(name)}”. If that’s your own work from before, continue. If it might be a classmate, please use a more specific name instead — e.g. add your last initial, like “${esc(name)} K”.</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="btn btn-primary" id="confirmYes">Yes, that’s me — continue</button>
+        <button class="btn btn-ghost" id="confirmNo">Use a different name</button>
+      </div>
+    </div>`));
+    qs("#confirmYes",backdrop).addEventListener("click", ()=>{ backdrop.remove(); resolve(true); });
+    qs("#confirmNo",backdrop).addEventListener("click", ()=>{ backdrop.remove(); resolve(false); });
+  });
+}
+
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+const app = qs("#app");
+
+function render(){
+  if(isTeacher){ renderTeacher(); return; }
+  if(!studentName){ renderWelcome(); return; }
+  renderStudentShell();
+}
+
+function renderWelcome(){
+  app.innerHTML = "";
+  app.appendChild(topbar(false));
+  const wrap = el(`<div class="welcome-wrap">
+    <div class="welcome-card">
+      <div class="pagebadge mono">PILOT · UNITS 1–10</div>
+      <h1>Welcome to the HAK English Lab</h1>
+      <p class="lead">Practise vocabulary, grammar, pronunciation and writing for <em>Business in Context 2. HAK</em> — and play a couple of quick games while you’re at it. Type your first name to start; your teacher will see your progress under this name.</p>
+      <div class="field">
+        <label for="nameInput">Your first name</label>
+        <input id="nameInput" type="text" maxlength="40" placeholder="e.g. Lena" autocomplete="off">
+        <div style="font-size:12.5px;color:var(--ink-faint);margin-top:6px">Use the same name every time to keep your progress. If someone else in your class has the same first name, add your last initial (e.g. “Lena K”) so your work doesn’t get mixed up with theirs.</div>
+      </div>
+      <button class="btn btn-primary" id="startBtn" style="width:100%">Start learning →</button>
+      <div id="startStatus" style="font-size:12.5px;color:var(--ink-soft);margin-top:10px;text-align:center"></div>
+    </div>
+  </div>`);
+  app.appendChild(wrap);
+  const input = qs("#nameInput", wrap);
+  const startBtn = qs("#startBtn", wrap);
+  const statusEl = qs("#startStatus", wrap);
+  input.addEventListener("keydown", e=>{ if(e.key==="Enter") start(); });
+  startBtn.addEventListener("click", start);
+  async function start(){
+    const v = input.value.trim();
+    if(!v){ input.focus(); input.style.borderColor="var(--danger)"; return; }
+    startBtn.disabled = true; statusEl.textContent = "Checking…";
+    try{ await capabilitiesReady; }catch(e){}
+    if(claudeDb){
+      try{
+        const snap = await claudeDb.doc("students/"+slug(v)).get();
+        const existing = snap && snap.exists ? snap.data() : null;
+        if(existing && hasAnyProgress(existing)){
+          statusEl.textContent = "";
+          const ok = await confirmNameModal(v);
+          if(!ok){ startBtn.disabled=false; input.focus(); input.select(); return; }
+        }
+      }catch(e){}
+    }
+    studentName = v;
+    try{ localStorage.setItem("hakel_name", v); }catch(e){}
+    render();
+  }
+  setTimeout(()=>input.focus(), 30);
+}
+
+function topbar(showWho){
+  const bar = el(`<div class="topbar">
+    <div class="brandmark">EN</div>
+    <div class="brandtext"><b>HAK English Lab</b><span>Business in Context · 2. Klasse</span></div>
+    <div class="topbar-spacer"></div>
+  </div>`);
+  if(showWho && studentName){
+    bar.insertBefore(el(`<div class="who">👤 ${esc(studentName)}
+      <button class="link-btn" style="color:var(--chrome-ink)" id="switchUser">switch</button></div>`), qs(".iconbtn", bar));
+  }
+  const lock = el(`<button class="iconbtn" title="Teacher login" id="teacherBtn">🔒</button>`);
+  bar.appendChild(lock);
+  setTimeout(()=>{
+    const sw = qs("#switchUser", bar);
+    if(sw) sw.addEventListener("click", ()=>{ studentName=null; try{localStorage.removeItem("hakel_name");}catch(e){} render(); });
+    qs("#teacherBtn", bar).addEventListener("click", openTeacherLogin);
+  },0);
+  return bar;
+}
+
+function renderStudentShell(){
+  app.innerHTML = "";
+  app.appendChild(topbar(true));
+  const shell = el(`<div class="shell"></div>`);
+  const sidebar = el(`<nav class="sidebar" aria-label="Units"></nav>`);
+  sidebar.appendChild(el(`<div class="grouplabel">Course blocks</div>`));
+  UNIT_ORDER.forEach(id=>{
+    const u = UNITS[id];
+    const tab = el(`<button class="tab ${id===currentUnit?"active":""}" style="--accent:${u.accent}">
+        <span class="stripe"></span>
+        <span>${esc(u.label)}<small>${esc(u.title)}</small></span>
+      </button>`);
+    tab.addEventListener("click", ()=>{ currentUnit=id; currentModule="tasks"; renderStudentShell(); });
+    sidebar.appendChild(tab);
+  });
+  shell.appendChild(sidebar);
+  const main = el(`<main class="content"></main>`);
+  shell.appendChild(main);
+  app.appendChild(shell);
+  renderModule(main);
+}
+
+const MODULES = [
+  {id:"tasks", label:"Tasks"},
+  {id:"vocab", label:"Vocabulary"},
+  {id:"grammar", label:"Grammar"},
+  {id:"pronunciation", label:"Pronunciation"},
+  {id:"writing", label:"Writing"},
+  {id:"games", label:"Games"},
+  {id:"quiz", label:"Unit Check"},
+];
+
+function renderModule(main){
+  const unit = UNITS[currentUnit];
+  main.innerHTML = "";
+  main.appendChild(el(`<div class="modheader">
+      <h2>${esc(unit.label)} — ${esc(unit.title)}</h2>
+      <span class="pagebadge">${esc(unit.pages)}</span>
+    </div>`));
+  main.appendChild(el(`<p class="subline">Grammar focus: ${esc(unit.grammarFocus)}</p>`));
+  const mtabs = el(`<div class="moduletabs" style="--accent:${unit.accent}"></div>`);
+  MODULES.forEach(m=>{
+    const b = el(`<button class="mtab ${m.id===currentModule?"active":""}" style="--accent:${unit.accent}">${esc(m.label)}</button>`);
+    b.addEventListener("click", ()=>{ currentModule=m.id; renderModule(main); });
+    mtabs.appendChild(b);
+  });
+  main.appendChild(mtabs);
+  const body = el(`<div class="modbody"></div>`);
+  main.appendChild(body);
+
+  ({
+    tasks: renderTasksModule,
+    vocab: renderVocabModule,
+    grammar: renderGrammarModule,
+    pronunciation: renderPronModule,
+    writing: renderWritingModule,
+    games: renderGamesModule,
+    quiz: renderQuizModule,
+  })[currentModule](body, unit);
+}
+
+/* ---------------- Tasks ---------------- */
+function renderTasksModule(body, unit){
+  body.appendChild(el(`<p class="subline" style="margin-top:-10px">Work through these tasks directly in your textbook. Tick each one off as you finish it — your teacher can see your progress.</p>`));
+  const list = el(`<div class="stack"></div>`);
+  body.appendChild(list);
+  const doneIds = (studentName && studentCache[slug(studentName)] && studentCache[slug(studentName)][unit.id].tasksDone) || [];
+  unit.tasks.forEach((t,i)=>{
+    const id = i;
+    const done = doneIds.includes(id);
+    const row = el(`<label class="task ${done?"done":""}">
+        <input type="checkbox" ${done?"checked":""}>
+        <div>
+          <span class="taskmeta">p. ${esc(t.page)}${t.ex&&t.ex!=="—"?" · Ex. "+esc(t.ex):""}</span>
+          <div class="tasktext">${esc(t.instr)}</div>
+          ${t.hint?`<div class="taskhint"><b>Tip:</b> ${esc(t.hint)}</div>`:""}
+        </div>
+      </label>`);
+    qs("input", row).addEventListener("change", async (e)=>{
+      row.classList.toggle("done", e.target.checked);
+      if(!studentName) return;
+      await updateStudent(studentName, data=>{
+        const arr = data[unit.id].tasksDone || [];
+        data[unit.id].tasksDone = e.target.checked ? Array.from(new Set([...arr,id])) : arr.filter(x=>x!==id);
+      });
+    });
+    list.appendChild(row);
+  });
+}
+
+/* ---------------- Vocabulary ---------------- */
+function renderVocabModule(body, unit){
+  let i = 0, flipped = false;
+  const wrap = el(`<div class="stack">
+    <div class="flashwrap">
+      <div class="flashcard" id="fcard"><span class="side-label">EN</span></div>
+      <div class="flashnav">
+        <button class="btn btn-ghost btn-sm" id="prevC">← Prev</button>
+        <span class="count mono" id="fcount"></span>
+        <button class="btn btn-ghost btn-sm" id="nextC">Next →</button>
+      </div>
+      <p style="font-size:13px;color:var(--ink-soft);margin:0">Tap the card to reveal the translation.</p>
+    </div>
+    <hr style="border:none;border-top:1px solid var(--line);margin:6px 0">
+    <div>
+      <h3 style="margin:0 0 4px;font-size:16px">Quick self-check</h3>
+      <p class="subline" style="margin:2px 0 14px">Five random questions from this unit’s vocabulary.</p>
+      <div id="vocabQuizArea"></div>
+    </div>
+  </div>`);
+  body.appendChild(wrap);
+  const card = qs("#fcard", wrap), count = qs("#fcount", wrap);
+  function paint(){
+    flipped=false;
+    const v = unit.vocab[i];
+    card.className="flashcard";
+    card.innerHTML = `<span class="side-label">EN</span>${esc(v.en)}`;
+    count.textContent = (i+1)+" / "+unit.vocab.length;
+  }
+  card.addEventListener("click", ()=>{
+    flipped=!flipped;
+    const v = unit.vocab[i];
+    card.className = "flashcard"+(flipped?" flip":"");
+    card.innerHTML = flipped ? `<span class="side-label">DE</span>${esc(v.de)}` : `<span class="side-label">EN</span>${esc(v.en)}`;
+  });
+  qs("#prevC", wrap).addEventListener("click", ()=>{ i=(i-1+unit.vocab.length)%unit.vocab.length; paint(); });
+  qs("#nextC", wrap).addEventListener("click", ()=>{ i=(i+1)%unit.vocab.length; paint(); });
+  paint();
+
+  // Self-check quiz generated from vocab
+  const qArea = qs("#vocabQuizArea", wrap);
+  const picks = shuffle(unit.vocab).slice(0, Math.min(5, unit.vocab.length));
+  const qitems = picks.map(v=>{
+    const distractors = shuffle(unit.vocab.filter(x=>x!==v)).slice(0,3).map(x=>x.de);
+    const options = shuffle([v.de, ...distractors]);
+    return {type:"mcq", q:`What does “${v.en}” mean?`, options, a: options.indexOf(v.de)};
+  });
+  renderGradableList(qArea, qitems, async (correct,total)=>{
+    if(studentName) await updateStudent(studentName, data=>{ data[unit.id].vocabScore = {correct, total, at: Date.now()}; });
+  }, "Check my answers", "vocab");
+}
+
+/* ---------------- Generic gradable list (grammar / quiz / vocab self-check) ---------------- */
+function renderGradableList(container, items, onGraded, buttonLabel, keyPrefix, opts){
+  opts = opts || {};
+  const revealAnswer = opts.revealAnswer !== false; // default true (Unit Check keeps showing the correct answer)
+  const allowReset = !!opts.allowReset;
+  container.innerHTML="";
+  const list = el(`<div class="stack"></div>`);
+  const answers = new Array(items.length).fill(null);
+  items.forEach((it, idx)=>{
+    const card = el(`<div class="qitem" data-idx="${idx}"><div class="qtext">${idx+1}. ${esc(it.q)}</div></div>`);
+    if(it.type==="mcq"){
+      const opts_ = el(`<div class="options"></div>`);
+      it.options.forEach((opt,oi)=>{
+        const row = el(`<label class="opt"><input type="radio" name="${keyPrefix}-${idx}"><span>${esc(opt)}</span></label>`);
+        qs("input",row).addEventListener("change", ()=>{
+          answers[idx]=oi;
+          qsa(".opt",opts_).forEach(o=>o.classList.remove("selected"));
+          row.classList.add("selected");
+        });
+        opts_.appendChild(row);
+      });
+      card.appendChild(opts_);
+    } else {
+      const inp = el(`<input type="text" placeholder="Type your answer…" style="max-width:340px">`);
+      inp.addEventListener("input", ()=>{ answers[idx]=inp.value; });
+      card.appendChild(inp);
+    }
+    card.appendChild(el(`<div class="qanswerline" hidden></div>`));
+    list.appendChild(card);
+  });
+  container.appendChild(list);
+  const bar = el(`<div style="margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"></div>`);
+  const goBtn = el(`<button class="btn btn-blue">${esc(buttonLabel)}</button>`);
+  bar.appendChild(goBtn);
+  let resetBtn = null;
+  if(allowReset){
+    resetBtn = el(`<button class="btn btn-ghost">Reset &amp; try again</button>`);
+    bar.appendChild(resetBtn);
+  }
+  const resultSlot = el(`<div style="flex:1"></div>`); bar.appendChild(resultSlot);
+  container.appendChild(bar);
+
+  goBtn.addEventListener("click", ()=>{
+    let correctCount=0;
+    items.forEach((it,idx)=>{
+      const card = qs(`.qitem[data-idx="${idx}"]`, list);
+      const ansLine = qs(".qanswerline", card);
+      let isCorrect=false, correctText="";
+      if(it.type==="mcq"){
+        correctText = it.options[it.a];
+        isCorrect = answers[idx]===it.a;
+        qsa(".opt", card).forEach((o,oi)=>{
+          o.classList.remove("correct","incorrect");
+          if(revealAnswer){
+            if(oi===it.a) o.classList.add("correct");
+            else if(oi===answers[idx]) o.classList.add("incorrect");
+          } else if(oi===answers[idx]){
+            o.classList.add(isCorrect?"correct":"incorrect");
+          }
+        });
+      } else {
+        correctText = it.accepted[0];
+        const given = String(answers[idx]||"").trim().toLowerCase();
+        isCorrect = it.accepted.some(a=>a.toLowerCase()===given);
+      }
+      card.classList.remove("graded-correct","graded-incorrect");
+      card.classList.add(isCorrect?"graded-correct":"graded-incorrect");
+      ansLine.hidden=false;
+      if(isCorrect) ansLine.innerHTML = `✅ Correct.`;
+      else ansLine.innerHTML = revealAnswer ? `❌ Correct answer: <b>${esc(correctText)}</b>` : `❌ Not quite — try again.`;
+      if(isCorrect) correctCount++;
+    });
+    const pct = Math.round(100*correctCount/items.length);
+    const tone = pct>=80?"success":pct>=50?"warning":"info";
+    resultSlot.innerHTML = `<div class="resultbar"><span class="score mono">${correctCount} / ${items.length}</span>
+      <span class="badge badge-${tone}">${pct}%</span></div>`;
+    onGraded && onGraded(correctCount, items.length);
+  });
+
+  if(resetBtn){
+    resetBtn.addEventListener("click", ()=>{
+      answers.fill(null);
+      qsa(".qitem", list).forEach(card=>{
+        qsa("input[type=radio]", card).forEach(r=>{ r.checked=false; });
+        qsa(".opt", card).forEach(o=>o.classList.remove("selected","correct","incorrect"));
+        const textInput = qs("input[type=text]", card);
+        if(textInput) textInput.value="";
+        card.classList.remove("graded-correct","graded-incorrect");
+        const ansLine = qs(".qanswerline", card);
+        ansLine.hidden = true; ansLine.innerHTML = "";
+      });
+      resultSlot.innerHTML = "";
+    });
+  }
+}
+
+/* ---------------- Grammar ---------------- */
+function renderGrammarModule(body, unit){
+  if(unit.grammarExplanation){
+    body.appendChild(el(`<div class="infobox">${unit.grammarExplanation}</div>`));
+  }
+  body.appendChild(el(`<p class="subline" style="margin-top:-10px">Answer, then check — you’ll see right/wrong, not the solution. Use “Reset &amp; try again” to have another go.</p>`));
+  const area = el(`<div></div>`); body.appendChild(area);
+  renderGradableList(area, unit.grammar, async (c,t)=>{
+    if(studentName) await updateStudent(studentName, data=>{ data[unit.id].grammarScore={correct:c,total:t,at:Date.now()}; });
+  }, "Check my answers", "gram", {revealAnswer:false, allowReset:true});
+}
+
+/* ---------------- Unit Check (quiz) ---------------- */
+function renderQuizModule(body, unit){
+  body.appendChild(el(`<p class="subline" style="margin-top:-10px">A short check covering this unit’s vocabulary and grammar. Your teacher will see your score.</p>`));
+  const area = el(`<div></div>`); body.appendChild(area);
+  renderGradableList(area, unit.quiz, async (c,t)=>{
+    if(studentName) await updateStudent(studentName, data=>{ data[unit.id].quizScore={correct:c,total:t,at:Date.now()}; });
+  }, "Submit check", "quiz");
+}
+
+/* ---------------- Pronunciation ---------------- */
+const TTS = window.speechSynthesis;
+let ttsVoices = [];
+function loadTtsVoices(){ try{ ttsVoices = TTS ? TTS.getVoices() : []; }catch(e){} }
+if(TTS){ loadTtsVoices(); TTS.onvoiceschanged = loadTtsVoices; }
+function pickVoice(accent){
+  // accent: "US" or "GB". Falls back to any English voice, then the browser default.
+  if(!ttsVoices.length) return null;
+  const byLang = ttsVoices.filter(v=>v.lang && v.lang.toLowerCase().startsWith(accent==="GB"?"en-gb":"en-us"));
+  if(byLang.length) return byLang[0];
+  const anyEn = ttsVoices.filter(v=>v.lang && v.lang.toLowerCase().startsWith("en"));
+  return anyEn[0] || ttsVoices[0] || null;
+}
+function speak(text, accent){
+  if(!TTS) return false;
+  try{
+    TTS.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const v = pickVoice(accent||"US");
+    if(v) u.voice = v;
+    u.rate = 0.92;
+    TTS.speak(u);
+    return true;
+  }catch(e){ return false; }
+}
+function renderPronModule(body, unit){
+  if(!TTS){
+    body.appendChild(el(`<div class="card">🔊 This browser can’t play spoken audio for this page. The written pronunciation guide below still works everywhere.</div>`));
+  } else {
+    body.appendChild(el(`<p class="subline" style="margin-top:-10px">Press ▶ to hear it spoken aloud (General American), then check the written guide below each one — say it out loud yourself, the same way you’d sound out a name like “banana → buh-NAN-uh”. Tick it once you’re confident.</p>`));
+  }
+  const list = el(`<div class="stack"></div>`);
+  body.appendChild(list);
+  const doneIds = (studentName && studentCache[slug(studentName)] && studentCache[slug(studentName)][unit.id].pronunciation.done) || [];
+  unit.pronunciation.forEach((item,i)=>{
+    const done = doneIds.includes(i);
+    const respell = item.rp
+      ? `<b>${esc(item.focus)}</b>: ${esc(item.ga)} <span class="mono" style="color:var(--ink-faint)">(GA)</span> &nbsp;·&nbsp; ${esc(item.rp)} <span class="mono" style="color:var(--ink-faint)">(RP)</span>`
+      : `<b>${esc(item.focus)}</b>: ${esc(item.ga)} <span class="mono" style="color:var(--ink-faint)">(GA &amp; RP)</span>`;
+    const row = el(`<div class="prow" style="align-items:flex-start">
+        <div style="flex:1;min-width:200px">
+          <div class="ptarget">${esc(item.text)}</div>
+          <div style="font-size:13.5px;color:var(--ink-soft);margin-top:4px">${respell}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex:none">
+          ${TTS ? `<button class="mic" title="Listen (General American)" data-accent="US">▶</button>
+                   <button class="mic" title="Listen (Received Pronunciation)" data-accent="GB" style="background:var(--ink-soft)">▶ RP</button>` : ""}
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-soft);cursor:pointer">
+            <input type="checkbox" style="width:18px;height:18px;accent-color:var(--success)" ${done?"checked":""}> I can say this
+          </label>
+        </div>
+      </div>`);
+    qsa(".mic", row).forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const ok = speak(item.text, btn.dataset.accent);
+        if(!ok){ btn.title = "Playback unavailable"; }
+      });
+    });
+    qs("input[type=checkbox]", row).addEventListener("change", async (e)=>{
+      if(!studentName) return;
+      await updateStudent(studentName, data=>{
+        const arr = data[unit.id].pronunciation.done || [];
+        data[unit.id].pronunciation.done = e.target.checked ? Array.from(new Set([...arr,i])) : arr.filter(x=>x!==i);
+      });
+    });
+    list.appendChild(row);
+  });
+}
+
+/* ---------------- Writing ---------------- */
+function renderWritingModule(body, unit){
+  const w = unit.writing;
+  const cached = studentName ? (studentCache[slug(studentName)] && studentCache[slug(studentName)][unit.id].writing) : null;
+  body.appendChild(el(`<div class="card stack">
+      <div><b>Task:</b> ${esc(w.prompt)}</div>
+      <div style="font-size:13px;color:var(--ink-soft)">Aim for about ${w.minWords}–${w.maxWords} words.</div>
+      <div id="teacherFb"></div>
+      <textarea id="wtext" placeholder="Write your answer here…">${cached?esc(cached.text):""}</textarea>
+      <div class="wordcount" id="wcount">${cached?wordCount(cached.text):0} words</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-primary" id="wcheck">Submit to teacher</button>
+        <span id="wstatus" style="font-size:13px;color:var(--ink-soft)"></span>
+      </div>
+    </div>`));
+  const ta = qs("#wtext"), wc = qs("#wcount"), btn = qs("#wcheck"), status = qs("#wstatus"), teacherFb = qs("#teacherFb");
+  ta.addEventListener("input", ()=>{ wc.textContent = wordCount(ta.value)+" words"; });
+
+  if(cached && cached.feedback){
+    teacherFb.innerHTML = `<div class="feedbackbox"><span class="ftitle">Feedback from your teacher${cached.feedbackAt?" · "+new Date(cached.feedbackAt).toLocaleDateString():""}</span>${esc(cached.feedback)}</div>`;
+  } else if(cached){
+    teacherFb.innerHTML = `<div style="font-size:13px;color:var(--ink-soft)">Submitted — waiting for your teacher to read it.</div>`;
+  }
+
+  if(!claudeDb){ btn.disabled = true; status.textContent = "Submitting isn’t available in this view."; }
+
+  btn.addEventListener("click", async ()=>{
+    const text = ta.value.trim();
+    if(wordCount(text) < 8){ status.textContent = "Write a bit more first."; return; }
+    if(!studentName){ status.textContent = "Enter your name first."; return; }
+    btn.disabled = true; status.textContent = "Submitting…";
+    await updateStudent(studentName, data=>{
+      const prevFeedback = data[unit.id].writing && data[unit.id].writing.feedback;
+      data[unit.id].writing = { text, wordCount: wordCount(text), at: Date.now(), feedback: null, feedbackAt: null };
+      // keep the old feedback visible until the teacher reviews the new version, rather than hiding it abruptly
+      if(prevFeedback) data[unit.id].writing.previousFeedback = prevFeedback;
+    });
+    status.textContent = "Submitted — your teacher can now read it and leave feedback.";
+    teacherFb.innerHTML = `<div style="font-size:13px;color:var(--ink-soft)">Submitted — waiting for your teacher to read it.</div>`;
+    btn.disabled = false;
+  });
+}
+
+/* ---------------- Games ---------------- */
+function renderGamesModule(body, unit){
+  const wrap = el(`<div class="grid2"></div>`);
+  body.appendChild(wrap);
+  wrap.appendChild(matchGameCard(unit));
+  wrap.appendChild(clockGameCard(unit));
+  wrap.appendChild(scrambleGameCard(unit));
+  wrap.appendChild(sprintGameCard(unit));
+}
+
+/* Builds correct, complete sentences out of this unit's own grammar mcq items
+   (question with "___" + the correct option), so every unit gets scramble
+   sentences for free without needing separately authored content. */
+function deriveScrambleSentences(unit){
+  const out = [];
+  (unit.grammar||[]).forEach(item=>{
+    if(item.type==="mcq" && item.options && /___/.test(item.q)){
+      let s = item.q;
+      const arrowIdx = s.indexOf("→");
+      if(arrowIdx>=0) s = s.slice(arrowIdx+1); // reported-speech items quote the direct question before "→" — keep only the reported clause
+      s = s.replace(/\s*\([^)]*\)/g, "");
+      s = s.replace("___", item.options[item.a]);
+      s = s.replace(/\s{2,}/g, " ").trim();
+      const wc = s.split(/\s+/).length;
+      if(wc>=4 && wc<=12 && !/[”“"]/.test(s)) out.push(s);
+    }
+  });
+  return out;
+}
+
+function scrambleGameCard(unit){
+  const sentences = deriveScrambleSentences(unit);
+  const card = el(`<div class="gamecard">
+      <h3>🔀 Sentence Scramble</h3>
+      <div class="gdesc">Click the words in the right order to rebuild a correct sentence from this unit’s grammar.</div>
+      <div class="gamestat" id="sBest">Best time: —</div>
+      <div id="sArea"></div>
+      <button class="btn btn-blue btn-sm" id="sStart">Start round</button>
+    </div>`);
+  if(!sentences.length){
+    qs("#sStart",card).disabled = true;
+    qs(".gdesc",card).textContent = "No scramble sentences are available for this unit yet.";
+    return card;
+  }
+  const best = qs("#sBest", card), area = qs("#sArea", card);
+  loadBest();
+  async function loadBest(){
+    if(!studentName) return;
+    const d = await loadStudent(studentName);
+    if(d && d[unit.id].games.scrambleBestMs) best.textContent = "Best time: "+(d[unit.id].games.scrambleBestMs/1000).toFixed(1)+"s";
+  }
+  qs("#sStart", card).addEventListener("click", ()=>startRound());
+
+  function startRound(){
+    const target = shuffle(sentences)[0];
+    const endPunct = (target.match(/[.?!]$/)||[""])[0];
+    const words = (endPunct ? target.slice(0,-1) : target).split(/\s+/);
+    let picked = [], t0 = Date.now(), timerId;
+    area.innerHTML = `<div class="clockrow"><span>⏱ <span class="big mono" id="sTime">0.0</span>s</span></div>
+      <div id="sBuilt" style="min-height:34px;margin-top:8px;padding:8px 10px;border:1px dashed var(--line);border-radius:8px"></div>
+      <div id="sTiles" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px"></div>
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button class="btn btn-blue btn-sm" id="sCheck">Check sentence</button>
+        <button class="btn btn-ghost btn-sm" id="sClear">Clear</button>
+      </div>
+      <div id="sMsg" style="margin-top:8px"></div>`;
+    timerId = setInterval(()=>{ qs("#sTime",area).textContent = ((Date.now()-t0)/1000).toFixed(1); }, 100);
+    const built = qs("#sBuilt",area), tiles = qs("#sTiles",area), msg = qs("#sMsg",area);
+    const order = shuffle(words.map((w,i)=>({w,i})));
+    function renderTiles(){
+      tiles.innerHTML = "";
+      order.forEach(item=>{
+        if(picked.includes(item.i)) return;
+        const t = el(`<button class="opt" style="cursor:pointer;padding:6px 10px;border-radius:8px;background:none;font-family:inherit;font-size:14px;color:var(--ink)">${esc(item.w)}</button>`);
+        t.addEventListener("click", ()=>{ picked.push(item.i); renderBuilt(); renderTiles(); });
+        tiles.appendChild(t);
+      });
+    }
+    function renderBuilt(){ built.textContent = picked.map(i=>words[i]).join(" "); }
+    renderTiles(); renderBuilt();
+    qs("#sClear",area).addEventListener("click", ()=>{ picked=[]; renderBuilt(); renderTiles(); });
+    qs("#sCheck",area).addEventListener("click", ()=>{
+      const attempt = picked.map(i=>words[i]).join(" ") + endPunct;
+      if(attempt.toLowerCase()===target.toLowerCase()){
+        clearInterval(timerId);
+        const ms = Date.now()-t0;
+        msg.innerHTML = `<div class="resultbar"><span class="score mono">${(ms/1000).toFixed(1)}s</span><span class="badge badge-success">Correct!</span></div>`;
+        qs("#sCheck",area).disabled = true;
+        (async ()=>{ if(studentName) await updateStudent(studentName, data=>{
+          const g=data[unit.id].games; if(!g.scrambleBestMs || ms<g.scrambleBestMs) g.scrambleBestMs=ms;
+        }); loadBest(); })();
+      } else {
+        msg.innerHTML = `<span class="badge badge-warning">Not quite — check the word order and try again.</span>`;
+      }
+    });
+  }
+  return card;
+}
+
+function sprintGameCard(unit){
+  const card = el(`<div class="gamecard">
+      <h3>⚡ Word Sprint</h3>
+      <div class="gdesc">30 seconds. Type the English word for each German translation shown.</div>
+      <div class="gamestat" id="wBest">Best score: —</div>
+      <div id="wArea"></div>
+      <button class="btn btn-blue btn-sm" id="wStart">Start round</button>
+    </div>`);
+  const best = qs("#wBest", card), area = qs("#wArea", card);
+  loadBest();
+  async function loadBest(){
+    if(!studentName) return;
+    const d = await loadStudent(studentName);
+    if(d && d[unit.id].games.sprintBest!=null) best.textContent = "Best score: "+d[unit.id].games.sprintBest;
+  }
+  qs("#wStart", card).addEventListener("click", ()=>startRound());
+
+  function startRound(){
+    const pool = shuffle(unit.vocab);
+    let idx=0, score=0, timeLeft=30, timerId;
+    area.innerHTML = `<div class="clockrow"><span class="big mono" id="wClock">30</span>s
+        <span class="mono">score: <b id="wScore">0</b></span></div><div id="wQ" style="margin-top:10px"></div>`;
+    const clockEl = qs("#wClock",area), scoreEl = qs("#wScore",area), qEl = qs("#wQ",area);
+    timerId = setInterval(()=>{
+      timeLeft--; clockEl.textContent = timeLeft;
+      if(timeLeft<=0) finish();
+    },1000);
+    nextQ();
+    function nextQ(){
+      if(idx>=pool.length) idx=0;
+      const it = pool[idx++];
+      qEl.innerHTML = `<div class="qitem"><div class="qtext">${esc(it.de)}</div>
+        <input type="text" id="wInput" placeholder="Type the English word…" style="max-width:280px" autocomplete="off"></div>`;
+      const inp = qs("#wInput", qEl); inp.focus();
+      inp.addEventListener("keydown", e=>{
+        if(e.key==="Enter"){
+          const given = inp.value.trim().toLowerCase();
+          if(given && given===it.en.toLowerCase()){ score++; scoreEl.textContent = score; }
+          if(timeLeft>0) nextQ();
+        }
+      });
+    }
+    function finish(){
+      clearInterval(timerId);
+      qEl.innerHTML = "";
+      area.querySelector(".clockrow").innerHTML = `Time’s up!`;
+      area.appendChild(el(`<div class="resultbar" style="margin-top:8px"><span class="score mono">${score} words</span><span class="badge badge-success">Round complete</span></div>`));
+      (async ()=>{ if(studentName) await updateStudent(studentName, data=>{
+        const g=data[unit.id].games; if(g.sprintBest==null || score>g.sprintBest) g.sprintBest=score;
+      }); loadBest(); })();
+    }
+  }
+  return card;
+}
+
+function matchGameCard(unit){
+  const card = el(`<div class="gamecard">
+      <h3>🧩 Match Rally</h3>
+      <div class="gdesc">Click a term, then click its match. Match all pairs as fast as you can.</div>
+      <div class="gamestat" id="mBest">Best time: —</div>
+      <div id="mArea"></div>
+      <button class="btn btn-blue btn-sm" id="mStart">Start round</button>
+    </div>`);
+  const best = qs("#mBest", card), area = qs("#mArea", card);
+  loadBest();
+  async function loadBest(){
+    if(!studentName) return;
+    const d = await loadStudent(studentName);
+    if(d && d[unit.id].games.matchBestMs) best.textContent = "Best time: "+(d[unit.id].games.matchBestMs/1000).toFixed(1)+"s";
+  }
+  qs("#mStart", card).addEventListener("click", ()=>startRound());
+
+  function startRound(){
+    const N = Math.min(6, unit.vocab.length);
+    const pairs = shuffle(unit.vocab).slice(0,N);
+    const left = shuffle(pairs.map((p,i)=>({key:i, text:p.en})));
+    const right = shuffle(pairs.map((p,i)=>({key:i, text:p.de})));
+    let selL=null, selR=null, matched=0, mistakes=0, t0=Date.now(), timerId;
+    area.innerHTML = `<div class="clockrow"><span>⏱ <span class="big mono" id="mTime">0.0</span>s</span><span class="mono" id="mMiss">0 mistakes</span></div>
+      <div class="matchgrid" id="mGrid" style="margin-top:10px"></div>`;
+    const grid = qs("#mGrid", area);
+    left.forEach(item=>grid.appendChild(tile(item,"L")));
+    right.forEach(item=>grid.appendChild(tile(item,"R")));
+    timerId = setInterval(()=>{ qs("#mTime",area).textContent = ((Date.now()-t0)/1000).toFixed(1); }, 100);
+
+    function tile(item, side){
+      const t = el(`<div class="matchtile" data-key="${item.key}" data-side="${side}">${esc(item.text)}</div>`);
+      t.addEventListener("click", ()=>{
+        if(t.classList.contains("ok")) return;
+        if(side==="L"){ if(selL) selL.classList.remove("sel"); selL=t; t.classList.add("sel"); }
+        else { if(selR) selR.classList.remove("sel"); selR=t; t.classList.add("sel"); }
+        if(selL && selR){
+          if(selL.dataset.key===selR.dataset.key){
+            selL.classList.remove("sel"); selR.classList.remove("sel");
+            selL.classList.add("ok"); selR.classList.add("ok");
+            matched++; selL=null; selR=null;
+            if(matched===N){
+              clearInterval(timerId);
+              const ms = Date.now()-t0;
+              qs("#mMiss",area).textContent = mistakes+" mistakes";
+              area.appendChild(el(`<div class="resultbar" style="margin-top:12px"><span class="score mono">${(ms/1000).toFixed(1)}s</span><span class="badge badge-success">All matched · ${mistakes} mistakes</span></div>`));
+              (async ()=>{ if(studentName) await updateStudent(studentName, data=>{
+                const g=data[unit.id].games; if(!g.matchBestMs || ms<g.matchBestMs) g.matchBestMs=ms;
+              }); loadBest(); })();
+            }
+          } else {
+            mistakes++; qs("#mMiss",area).textContent = mistakes+" mistakes";
+            selL.classList.add("bad"); selR.classList.add("bad");
+            setTimeout(()=>{ selL&&selL.classList.remove("sel","bad"); selR&&selR.classList.remove("sel","bad"); selL=null; selR=null; }, 350);
+          }
+        }
+      });
+      return t;
+    }
+  }
+  return card;
+}
+
+function clockGameCard(unit){
+  const card = el(`<div class="gamecard">
+      <h3>⏱ Beat the Clock</h3>
+      <div class="gdesc">45 seconds. Answer as many grammar &amp; vocab questions as you can.</div>
+      <div class="gamestat" id="cBest">Best score: —</div>
+      <div id="cArea"></div>
+      <button class="btn btn-blue btn-sm" id="cStart">Start round</button>
+    </div>`);
+  const best = qs("#cBest", card), area = qs("#cArea", card);
+  loadBest();
+  async function loadBest(){
+    if(!studentName) return;
+    const d = await loadStudent(studentName);
+    if(d && d[unit.id].games.clockBest!=null) best.textContent = "Best score: "+d[unit.id].games.clockBest;
+  }
+  qs("#cStart", card).addEventListener("click", ()=>startRound());
+
+  function startRound(){
+    const pool = shuffle(unit.grammar.filter(x=>x.type==="mcq").concat(unit.quiz.filter(x=>x.type==="mcq")));
+    let idx=0, score=0, timeLeft=45, timerId;
+    area.innerHTML = `<div class="clockrow"><span class="big mono" id="cClock">45</span>s
+        <span class="mono">score: <b id="cScore">0</b></span></div><div id="cQ" style="margin-top:10px"></div>`;
+    const clockEl = qs("#cClock",area), scoreEl = qs("#cScore",area), qEl = qs("#cQ",area);
+    timerId = setInterval(()=>{
+      timeLeft--; clockEl.textContent = timeLeft;
+      if(timeLeft<=0) finish();
+    },1000);
+    nextQ();
+    function nextQ(){
+      if(idx>=pool.length) idx=0;
+      const it = pool[idx++];
+      qEl.innerHTML = "";
+      const box = el(`<div class="qitem"><div class="qtext">${esc(it.q)}</div><div class="options"></div></div>`);
+      const opts = qs(".options",box);
+      it.options.forEach((o,oi)=>{
+        const b = el(`<button class="opt" style="cursor:pointer;width:100%;text-align:left;background:none;font-family:inherit;font-size:14px;color:var(--ink)">${esc(o)}</button>`);
+        b.addEventListener("click", ()=>{
+          qsa(".opt",opts).forEach(x=>x.style.pointerEvents="none");
+          if(oi===it.a){ b.classList.add("correct"); score+=10; scoreEl.textContent=score; }
+          else { b.classList.add("incorrect"); qsa(".opt",opts)[it.a].classList.add("correct"); }
+          setTimeout(()=>{ if(timeLeft>0) nextQ(); }, 500);
+        });
+        opts.appendChild(b);
+      });
+      qEl.appendChild(box);
+    }
+    function finish(){
+      clearInterval(timerId);
+      qEl.innerHTML = "";
+      area.querySelector(".clockrow").innerHTML = `Time’s up!`;
+      area.appendChild(el(`<div class="resultbar" style="margin-top:8px"><span class="score mono">${score} pts</span><span class="badge badge-success">Round complete</span></div>`));
+      (async ()=>{ if(studentName) await updateStudent(studentName, data=>{
+        const g=data[unit.id].games; if(g.clockBest==null || score>g.clockBest) g.clockBest=score;
+      }); loadBest(); })();
+    }
+  }
+  return card;
+}
+
+/* ============================================================
+   TEACHER DASHBOARD
+   ============================================================ */
+function openTeacherLogin(){
+  const backdrop = el(`<div class="modal-backdrop"></div>`);
+  document.body.appendChild(backdrop);
+  renderLoginModal();
+
+  async function renderLoginModal(){
+    backdrop.innerHTML="";
+    if(!claudeDb){
+      backdrop.appendChild(el(`<div class="modal"><h2>Teacher area unavailable</h2><p>Progress tracking isn’t available in this view, so there’s nothing to log into.</p><button class="btn btn-ghost" id="close">Close</button></div>`));
+      qs("#close",backdrop).addEventListener("click", ()=>backdrop.remove());
+      return;
+    }
+    let hasPin=false, existing=null;
+    try{ const snap=await claudeDb.doc("config/teacher").get(); if(snap&&snap.exists){ existing=snap.data(); hasPin=!!(existing&&existing.pin); } }catch(e){}
+    if(!hasPin){
+      backdrop.appendChild(el(`<div class="modal">
+        <h2>Set up your teacher PIN</h2>
+        <p>No PIN exists yet for this class. Choose a 4–6 digit PIN — you’ll use it to open the progress dashboard.</p>
+        <div class="field"><input class="pin-input" id="pin1" type="password" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+        <div class="field"><input class="pin-input" id="pin2" type="password" inputmode="numeric" maxlength="6" placeholder="confirm"></div>
+        <p id="pinErr" style="color:var(--danger);display:none;font-size:12.5px"></p>
+        <div style="display:flex;gap:8px"><button class="btn btn-primary" id="setPin" style="flex:1">Save PIN</button><button class="btn btn-ghost" id="cancelPin">Cancel</button></div>
+      </div>`));
+      qs("#cancelPin",backdrop).addEventListener("click",()=>backdrop.remove());
+      qs("#setPin",backdrop).addEventListener("click", async ()=>{
+        const a=qs("#pin1",backdrop).value.trim(), b=qs("#pin2",backdrop).value.trim();
+        const err=qs("#pinErr",backdrop);
+        if(a.length<4||!/^\d+$/.test(a)){ err.textContent="PIN must be at least 4 digits."; err.style.display="block"; return; }
+        if(a!==b){ err.textContent="PINs don’t match."; err.style.display="block"; return; }
+        try{ await claudeDb.doc("config/teacher").set({pin:a}); backdrop.remove(); enterTeacher(); }
+        catch(e){ err.textContent="Couldn’t save the PIN — please try again."; err.style.display="block"; }
+      });
+      return;
+    }
+    backdrop.appendChild(el(`<div class="modal">
+      <h2>Teacher login</h2>
+      <p>Enter your PIN to view student progress.</p>
+      <div class="field"><input class="pin-input" id="pinTry" type="password" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+      <p id="pinErr2" style="color:var(--danger);display:none;font-size:12.5px">Incorrect PIN.</p>
+      <div style="display:flex;gap:8px"><button class="btn btn-primary" id="doLogin" style="flex:1">Log in</button><button class="btn btn-ghost" id="cancelLogin">Cancel</button></div>
+    </div>`));
+    qs("#cancelLogin",backdrop).addEventListener("click",()=>backdrop.remove());
+    const tryLogin = ()=>{
+      const v=qs("#pinTry",backdrop).value.trim();
+      if(v===existing.pin){ backdrop.remove(); enterTeacher(); }
+      else { qs("#pinErr2",backdrop).style.display="block"; }
+    };
+    qs("#doLogin",backdrop).addEventListener("click", tryLogin);
+    qs("#pinTry",backdrop).addEventListener("keydown", e=>{ if(e.key==="Enter") tryLogin(); });
+    setTimeout(()=>qs("#pinTry",backdrop).focus(),30);
+  }
+}
+
+function enterTeacher(){ isTeacher = true; render(); }
+
+async function renderTeacher(){
+  app.innerHTML = "";
+  const bar = el(`<div class="topbar">
+    <div class="brandmark">EN</div>
+    <div class="brandtext"><b>HAK English Lab</b><span>Teacher dashboard</span></div>
+    <div class="topbar-spacer"></div>
+    <button class="btn btn-ghost btn-sm" id="exportCsv">Export CSV</button>
+    <button class="btn btn-ghost btn-sm" id="changePin">Change PIN</button>
+    <button class="iconbtn" id="exitTeacher" title="Exit">×</button>
+  </div>`);
+  app.appendChild(bar);
+  qs("#exitTeacher",bar).addEventListener("click", ()=>{ isTeacher=false; render(); });
+  qs("#changePin",bar).addEventListener("click", openChangePin);
+  const main = el(`<main class="content" style="max-width:1180px;margin:0 auto"></main>`);
+  app.appendChild(main);
+  main.appendChild(el(`<div class="modheader"><h2>Student progress</h2></div>`));
+  main.appendChild(el(`<p class="subline">Live view of every student who has used the app. Click a row to see writing feedback and detailed scores. There are no passwords, so each row is one login name — if two students ever share a name, their progress merges into one row; the app warns students when they type a name that already has saved progress, but it’s worth telling any duplicates (e.g. two Lenas) to add a last initial.</p>`));
+  const tableSlot = el(`<div id="tableSlot"><p style="color:var(--ink-faint)">Loading…</p></div>`);
+  main.appendChild(tableSlot);
+
+  if(!claudeDb){ tableSlot.innerHTML = `<div class="card">Progress tracking isn’t available in this view.</div>`; return; }
+
+  let students = [];
+  try{
+    const snap = await claudeDb.collection("students").get();
+    students = (snap && snap.docs ? snap.docs.map(d=>d.data()) : []).sort((a,b)=>(b.lastActive||0)-(a.lastActive||0));
+  }catch(e){}
+
+  qs("#exportCsv",bar).addEventListener("click", ()=>exportCsv(students));
+
+  if(!students.length){ tableSlot.innerHTML = `<div class="card">No students yet — once someone enters their name and starts practising, they’ll show up here.</div>`; return; }
+
+  function fmtScore(s){ return s ? `<span class="scorepill">${s.correct}/${s.total}</span>` : "<span style='color:var(--ink-faint)'>—</span>"; }
+  function fmtDate(ts){ if(!ts) return "—"; const d=new Date(ts); return d.toLocaleDateString()+" "+d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}); }
+
+  const table = el(`<table class="dash"><thead><tr>
+      <th>Student</th><th>Last active</th><th>Avg check score</th>
+      <th>Tasks done</th><th>Writing</th><th>Pronunciation</th>
+    </tr></thead><tbody></tbody></table>`);
+  const tbody = qs("tbody", table);
+  students.forEach(s=>{
+    const tasksDone = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].tasksDone)?s[u].tasksDone.length:0), 0);
+    const writingCount = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].writing)?1:0), 0);
+    const writingNeedsFeedback = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].writing && !s[u].writing.feedback)?1:0), 0);
+    const pronDone = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].pronunciation&&s[u].pronunciation.done)?s[u].pronunciation.done.length:0), 0);
+    let scoreSum=0, scoreCount=0;
+    UNIT_ORDER.forEach(u=>{ if(s[u]&&s[u].quizScore){ scoreSum += s[u].quizScore.correct/s[u].quizScore.total; scoreCount++; } });
+    const avgPct = scoreCount ? Math.round(100*scoreSum/scoreCount) : null;
+    const tr = el(`<tr style="cursor:pointer">
+        <td><b>${esc(s.name)}</b></td>
+        <td class="mono">${fmtDate(s.lastActive)}</td>
+        <td>${avgPct!=null?`<span class="scorepill">${avgPct}%</span> <span style="color:var(--ink-faint);font-size:12px">(${scoreCount}/${UNIT_ORDER.length} units)</span>`:"<span style='color:var(--ink-faint)'>—</span>"}</td>
+        <td class="mono">${tasksDone}</td>
+        <td class="mono">${writingCount}${writingNeedsFeedback>0?` <span class="badge badge-warning" style="margin-left:4px">${writingNeedsFeedback} awaiting feedback</span>`:""}</td>
+        <td class="mono">${pronDone}</td>
+      </tr>`);
+    const detail = el(`<tr class="detailrow" hidden><td colspan="6"></td></tr>`);
+    tr.addEventListener("click", ()=>{
+      detail.hidden = !detail.hidden;
+      if(!detail.hidden) renderStudentDetail(qs("td",detail), s);
+    });
+    tbody.appendChild(tr); tbody.appendChild(detail);
+  });
+  tableSlot.innerHTML=""; tableSlot.appendChild(table);
+}
+
+async function saveTeacherFeedback(studentName, unitId, feedbackText){
+  if(!claudeDb) return;
+  const id = slug(studentName);
+  try{
+    const snap = await claudeDb.doc("students/"+id).get();
+    if(!snap || !snap.exists) return;
+    const data = snap.data();
+    if(!data[unitId] || !data[unitId].writing) return;
+    data[unitId].writing.feedback = feedbackText;
+    data[unitId].writing.feedbackAt = Date.now();
+    await claudeDb.doc("students/"+id).set(data);
+    studentCache[id] = data;
+  }catch(e){ console.warn("saveTeacherFeedback failed", e); }
+}
+
+function renderStudentDetail(container, s){
+  container.innerHTML = "";
+  const wrap = el(`<div class="studentdetail"><div class="grid2"></div></div>`);
+  const grid = qs(".grid2", wrap);
+  UNIT_ORDER.forEach(u=>{
+    const d = s[u]||{};
+    const pronDone = (d.pronunciation && d.pronunciation.done) ? d.pronunciation.done.length : 0;
+    const box = el(`<div>
+      <b>${esc(UNITS[u].label)}</b><br>
+      Vocab: ${d.vocabScore?d.vocabScore.correct+"/"+d.vocabScore.total:"—"} ·
+      Grammar: ${d.grammarScore?d.grammarScore.correct+"/"+d.grammarScore.total:"—"} ·
+      Check: ${d.quizScore?d.quizScore.correct+"/"+d.quizScore.total:"—"}<br>
+      Games — Match: ${d.games&&d.games.matchBestMs?(d.games.matchBestMs/1000).toFixed(1)+"s":"—"},
+      Clock: ${d.games&&d.games.clockBest!=null?d.games.clockBest:"—"},
+      Scramble: ${d.games&&d.games.scrambleBestMs?(d.games.scrambleBestMs/1000).toFixed(1)+"s":"—"},
+      Sprint: ${d.games&&d.games.sprintBest!=null?d.games.sprintBest:"—"}<br>
+      Pronunciation marked confident: ${pronDone}/${UNITS[u].pronunciation.length}
+    </div>`);
+    if(d.writing){
+      const fb = el(`<div class="feedbackbox" style="margin-top:8px">
+        <span class="ftitle">Writing — ${d.writing.wordCount} words, ${new Date(d.writing.at).toLocaleDateString()}</span>
+        <div style="white-space:pre-wrap;margin-bottom:10px">${esc(d.writing.text)}</div>
+        <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--orange);margin-bottom:6px;font-weight:600">Your feedback</label>
+        <textarea class="fbInput" style="min-height:70px;font-size:13.5px" placeholder="Write feedback for ${esc(s.name)}…">${esc(d.writing.feedback||"")}</textarea>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+          <button class="btn btn-primary btn-sm fbSave">Save feedback</button>
+          <span class="fbStatus" style="font-size:12px;color:var(--ink-soft)">${d.writing.feedback?"Feedback given "+(d.writing.feedbackAt?new Date(d.writing.feedbackAt).toLocaleDateString():""):"Not yet given"}</span>
+        </div>
+      </div>`);
+      qs(".fbSave", fb).addEventListener("click", async ()=>{
+        const text = qs(".fbInput", fb).value.trim();
+        const status = qs(".fbStatus", fb);
+        status.textContent = "Saving…";
+        await saveTeacherFeedback(s.name, u, text);
+        status.textContent = "Saved just now.";
+      });
+      box.appendChild(fb);
+    }
+    grid.appendChild(box);
+  });
+  container.appendChild(wrap);
+}
+
+function exportCsv(students){
+  const unitHeaders = UNIT_ORDER.map(u=>UNITS[u].label+" check");
+  const rows = [["Name","Last active",...unitHeaders,"Tasks done","Writing submissions","Writing awaiting feedback","Pronunciation phrases marked confident","Best Match Rally (s)","Best Beat the Clock score","Best Sentence Scramble (s)","Best Word Sprint score"]];
+  students.forEach(s=>{
+    const tasksDone = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].tasksDone)?s[u].tasksDone.length:0), 0);
+    const writingCount = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].writing)?1:0), 0);
+    const writingNeedsFeedback = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].writing && !s[u].writing.feedback)?1:0), 0);
+    const pronDone = UNIT_ORDER.reduce((sum,u)=> sum + ((s[u]&&s[u].pronunciation&&s[u].pronunciation.done)?s[u].pronunciation.done.length:0), 0);
+    const sc = u => s[u]&&s[u].quizScore ? s[u].quizScore.correct+"/"+s[u].quizScore.total : "";
+    let bestMatch=null, bestClock=null, bestScramble=null, bestSprint=null;
+    UNIT_ORDER.forEach(u=>{
+      const g = s[u] && s[u].games; if(!g) return;
+      if(g.matchBestMs!=null && (bestMatch==null||g.matchBestMs<bestMatch)) bestMatch=g.matchBestMs;
+      if(g.clockBest!=null && (bestClock==null||g.clockBest>bestClock)) bestClock=g.clockBest;
+      if(g.scrambleBestMs!=null && (bestScramble==null||g.scrambleBestMs<bestScramble)) bestScramble=g.scrambleBestMs;
+      if(g.sprintBest!=null && (bestSprint==null||g.sprintBest>bestSprint)) bestSprint=g.sprintBest;
+    });
+    rows.push([s.name, s.lastActive?new Date(s.lastActive).toISOString():"", ...UNIT_ORDER.map(sc), tasksDone, writingCount, writingNeedsFeedback, pronDone,
+      bestMatch!=null?(bestMatch/1000).toFixed(1):"", bestClock!=null?bestClock:"", bestScramble!=null?(bestScramble/1000).toFixed(1):"", bestSprint!=null?bestSprint:""]);
+  });
+  const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
+  const ok = downloadFile("hak-english-lab-progress.csv", csv);
+  if(!ok) alert("Download didn’t start — please copy the table manually.");
+}
+
+function openChangePin(){
+  const backdrop = el(`<div class="modal-backdrop"></div>`);
+  document.body.appendChild(backdrop);
+  backdrop.appendChild(el(`<div class="modal">
+    <h2>Change teacher PIN</h2>
+    <div class="field"><input class="pin-input" id="np1" type="password" inputmode="numeric" maxlength="6" placeholder="new PIN"></div>
+    <div class="field"><input class="pin-input" id="np2" type="password" inputmode="numeric" maxlength="6" placeholder="confirm"></div>
+    <p id="npErr" style="color:var(--danger);display:none;font-size:12.5px"></p>
+    <div style="display:flex;gap:8px"><button class="btn btn-primary" id="npSave" style="flex:1">Save</button><button class="btn btn-ghost" id="npCancel">Cancel</button></div>
+  </div>`));
+  qs("#npCancel",backdrop).addEventListener("click",()=>backdrop.remove());
+  qs("#npSave",backdrop).addEventListener("click", async ()=>{
+    const a=qs("#np1",backdrop).value.trim(), b=qs("#np2",backdrop).value.trim(), err=qs("#npErr",backdrop);
+    if(a.length<4||!/^\d+$/.test(a)){ err.textContent="PIN must be at least 4 digits."; err.style.display="block"; return; }
+    if(a!==b){ err.textContent="PINs don’t match."; err.style.display="block"; return; }
+    try{ await claudeDb.doc("config/teacher").set({pin:a}); backdrop.remove(); }
+    catch(e){ err.textContent="Couldn’t save — try again."; err.style.display="block"; }
+  });
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+function boot(){
+  try{
+    if(typeof firebase === "undefined") throw new Error("Firebase SDK failed to load");
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    claudeDb = firebase.firestore();
+  }catch(e){
+    console.error("Firebase init failed:", e);
+    claudeDb = null;
+  }
+  render();
+  if(studentName) loadStudent(studentName).then(()=>{ if(!isTeacher) render(); });
+}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+
+})();
+</script>
+</body>
+</html>
